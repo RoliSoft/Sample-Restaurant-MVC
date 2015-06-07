@@ -35,7 +35,7 @@ class User extends ModelBase
 /**
  * Represents a user type.
  **/
-abstract class UserTypes extends SplEnum
+abstract class UserTypes //extends SplEnum
 {
 
 	/**

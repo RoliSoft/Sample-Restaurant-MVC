@@ -35,7 +35,7 @@ class Food extends ModelBase
 /**
  * Represents a food type.
  **/
-abstract class FoodTypes extends SplEnum
+abstract class FoodTypes //extends SplEnum
 {
 
 	/**
