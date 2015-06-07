@@ -13,10 +13,10 @@ class Restaurant extends ControllerBase
 		print 'Welcome to the index!';
 
 		$food = new Food();
-		//$food->id = 1;
+		$food->id = 1;
 		$food->name = 'Pizza';
 		$food->type = 5;
-		$food->save();
+		$food->get(2);
 	}
 
 	/**

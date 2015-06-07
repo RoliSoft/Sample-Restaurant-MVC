@@ -18,6 +18,6 @@ class Menu extends ModelBase
 	/**
 	 * ID of the food.
 	 **/
-	public $foodId;
+	public $food_id;
 
 }

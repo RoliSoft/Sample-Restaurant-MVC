@@ -20,14 +20,16 @@ class ModelBase
      **/
     public function get($id)
     {
-        $sql = 'select '.join(', ', $this->getFields()).' from '.$this->getTable().' where id = '.$id;
-        print $sql;
+        $sql = 'select '.join(', ', $this->getFields()).' from '.$this->getTable().' where id = ?';
+        $params = [$id];
+
+        print var_dump([$sql, $params]);
     }
 
     /**
      * Gets all the items, with condition if specified.
      **/
-    public function getAll($where = null)
+    public function getAll($where = null, $params = null)
     {
         $sql = 'select '.join(', ', $this->getFields()).' from '.$this->getTable();
 
@@ -35,7 +37,7 @@ class ModelBase
             $sql .= ' where '.$where;
         }
 
-        print $sql;
+        print var_dump([$sql, $params]);
     }
 
     /**
@@ -52,31 +54,24 @@ class ModelBase
         // if ID is set, perform an update
         if (isset($this->id)) {
             $sql = 'update '.$this->getTable().' set ';
+            $params = [];
 
             foreach ($fields as $field) {
-                $sql .= $field.' = ';
-
-                if (is_numeric($this->$field)) {
-                    $sql .= $this->$field.', ';
-                }
-                else {
-                    $sql .= '"'.$this->$field.'", ';
-                }
+                $sql .= $field.' = ?, ';
+                $params[] = $this->$field;
             }
 
-            $sql = rtrim($sql, ', ').' where id = '.$this->id.' limit 1';
+            $sql = rtrim($sql, ', ').' where id = ? limit 1';
+            $params[] = $this->id;
         }
         // if ID is not set, perform an insert
         else {
             $sql = 'insert into '.$this->getTable().' ('.join(', ', $fields).') values (';
+            $params = [];
 
             foreach ($fields as $field) {
-                if (is_numeric($this->$field)) {
-                    $sql .= $this->$field.', ';
-                }
-                else {
-                    $sql .= '"'.$this->$field.'", ';
-                }
+                $sql .= '?, ';
+                $params[] = $this->$field;
             }
 
             $sql = rtrim($sql, ', ').')';
@@ -84,7 +79,7 @@ class ModelBase
             // before commit: $this->id = $db->lastInsertId();
         }
 
-        print $sql;
+        print var_dump([$sql, $params]);
     }
 
     /**

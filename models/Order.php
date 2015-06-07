@@ -18,12 +18,12 @@ class Order extends ModelBase
 	/**
 	 * ID of the user.
 	 **/
-	public $userId;
+	public $user_id;
 
 	/**
 	 * ID of the pass ordered.
 	 **/
-	public $passId;
+	public $pass_id;
 
 	/**
 	 * Payment gateway used.
