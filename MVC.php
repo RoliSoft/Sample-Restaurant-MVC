@@ -16,12 +16,7 @@ class MVC
 	 * Array structure is:
 	 *   GET/POST -> DIRECT/PATTERN -> PATH -> HANDLER
 	 **/
-	private $routes;
-
-	/**
-	 * Contains a list of initiazlied controller.
-	 **/
-	private $controllers;
+	protected $routes;
 
 
 	/**
@@ -83,7 +78,7 @@ class MVC
 			throw new Exception('Class "'.$class.'" does not exist.');
 		}
 
-		$controller = new $handler[0][0](this);
+		$controller = new $class($this);
 
 		if (!method_exists($controller, $method)) {
 			throw new Exception('Class "'.$class.'" does not have method "'.$method.'".');

@@ -2,31 +2,15 @@
 /**
  * Implements the main functions of the restaurant.
  **/
-class Restaurant// extends AnotherClass
+class Restaurant extends ControllerBase
 {
-
-	/**
-	 * Reference to the parent application.
-	 **/
-	private $app;
-
-	/**
-	 * Initializes the class.
-	 **/
-	function __construct($app)
-	{
-		if (!isset($app)) {
-			throw new InvalidArgumentException('The $app argument should point to a valid application.');
-		}
-
-		$this->app = $app;
-	}
 
 	/**
 	 * Generates the index page.
 	 **/
 	public function Index()
 	{
+		print 'Welcome to the index!';
 	}
 
 	/**
