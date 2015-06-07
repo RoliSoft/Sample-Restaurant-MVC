@@ -83,6 +83,41 @@ class ModelBase
     }
 
     /**
+     * Creates the table in the database, if doesn't already exist.
+     **/
+    public function create()
+    {
+        $sql = 'create table if not exists '.$this->getTable()." (\n";
+
+        $fields = $this->getFields();
+        $hasId = false;
+
+        foreach ($fields as $field) {
+            if ($field == 'id') {
+                $hasId = true;
+                $sql .= ' '.$field." int(11) not null auto_increment,\n";
+            }
+            else if (is_numeric($this->$field)) {
+                $sql .= ' '.$field." int(11) not null,\n";
+            }
+            else {
+                $sql .= ' '.$field." text not null,\n";
+            }
+        }
+
+        if ($hasId) {
+            $sql .= " primary key (id)\n";
+        }
+        else {
+            $sql = rtrim($sql, ", \n")."\n";
+        }
+
+        $sql .= ') engine=InnoDB default charset=utf8';
+
+        print var_dump($sql);
+    }
+
+    /**
      * Gets the table name of the inheriting class.
      **/
     private function getTable()

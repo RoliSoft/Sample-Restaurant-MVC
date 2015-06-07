@@ -16,7 +16,7 @@ class Restaurant extends ControllerBase
 		$food->id = 1;
 		$food->name = 'Pizza';
 		$food->type = 5;
-		$food->get(2);
+		$food->create();
 	}
 
 	/**
