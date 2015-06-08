@@ -30,12 +30,23 @@ class MVC
 	public $view;
 
 	/**
+	 * Initialized database instance.
+	 **/
+	public $db;
+
+	/**
+	 * Initialized cache instance.
+	 **/
+	public $cache;
+
+	/**
 	 * Initializes the class.
 	 **/
 	function __construct()
 	{
 		$this->routes = [GET, POST];
 		$this->view = new View();
+		$this->cache = new Cache();
 	}
 
 	/**

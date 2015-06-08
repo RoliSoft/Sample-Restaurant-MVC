@@ -2,6 +2,7 @@
 include 'autoloader.php';
 
 $app = new MVC();
+$app->db = new Database('.config.php');
 $app->stripPath = '/webproj';
 
 $app->route(GET,  '',			['Restaurant', 'Index']);
