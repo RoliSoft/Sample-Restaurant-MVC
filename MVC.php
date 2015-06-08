@@ -18,7 +18,6 @@ class MVC
 	 **/
 	protected $routes;
 
-
 	/**
 	 * Path to strip from the request URI before processing.
 	 **/

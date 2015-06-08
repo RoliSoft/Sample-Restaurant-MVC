@@ -37,7 +37,7 @@ class Database extends PDO
 			$this->dsn = $dsn;
 		}
 		else if (isset($hostname) && isset($database)) {
-        	$this->dsn = 'mysql:host='.$host.';dbname='.$database.';charset=utf8';
+        	$this->dsn = 'mysql:host='.$hostname.';dbname='.$database.';charset=utf8';
 		}
 		else {
 			throw new InvalidArgumentException('Unable to derive the required connection info.');
@@ -61,7 +61,7 @@ class Database extends PDO
 				// PDOException messages contain the host, user, pass, and as such we do not
 				// rethrow and definitely do not show the error message to the user, just return
 				// false indicating error.
-
+                //print var_dump($e);
 				return false;
 			}
 
@@ -100,7 +100,7 @@ class Database extends PDO
 	/**
 	 * Executes an SQL statement, with optional parameters, and returns the number of affected rows.
 	 **/
-    public function exec($sql, $params = null)
+    public function exec($sql, $params = null, $return = 0)
     {
 		if (!$this->connect()) {
 			return null;

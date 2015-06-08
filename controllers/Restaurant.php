@@ -12,46 +12,51 @@ class Restaurant extends ControllerBase
 	{
 		$this->app->view->make('header');
 
-		print 'Welcome to the index!';
+		print '<p>Welcome to the index!</p>';
 
-		$food = new Food();
-		$food->name = 'Pizza';
+		/*$food = (new Food($this))->getAll('type = ?', [1]);
+		print var_dump($food);*/
+
+		/*$food = new Food($this);
+		$food->id = 3;
+		$food->name = 'French Fries';
 		$food->type = FoodTypes::Main;
-		$food->calories = 285;
+		$food->calories = 500;
 		$food->rate_cnt = 48;
 		$food->rate_sum = 216;
-		$food->create();
-		$food->save();
+		//print var_dump($food->create());
+		print var_dump($food->save());
+		print var_dump($food);*/
 
-		$user = new User();
+		/*$user = new User($this);
 		$user->name = 'RoliSoft';
 		$user->setPassword('test');
 		$user->email = 'root@rolisoft.net';
 		$user->type = UserTypes::Admin;
-		$user->create();
-		$user->save();
+		print var_dump($user->create());
+		print var_dump($user->save());
 
-		$pass = new Pass();
+		$pass = new Pass($this);
 		$pass->name = 'Weekly';
 		$pass->meals = 5;
 		$pass->price = 50;
-		$pass->create();
-		$pass->save();
+		print var_dump($pass->create());
+		print var_dump($pass->save());
 
-		$menu = new Menu();
+		$menu = new Menu($this);
 		$menu->date = date('Y-m-d H:i:s');
 		$menu->food_id = 1;
-		$menu->create();
-		$menu->save();
+		print var_dump($menu->create());
+		print var_dump($menu->save());
 
-		$order = new Order();
+		$order = new Order($this);
 		$order->date = date('Y-m-d H:i:s');
 		$order->user_id = 1;
 		$order->pass_id = 1;
 		$order->gateway = Gateways::Stripe;
 		$order->sum = $pass->price;
-		$order->create();
-		$order->save();
+		print var_dump($order->create());
+		print var_dump($order->save());*/
 
 		$this->app->view->make('footer');
 	}

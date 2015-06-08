@@ -6,6 +6,16 @@ class ModelBase
 {
 
     /**
+     * Reference to the parent application.
+     **/
+    public $app;
+
+    /**
+     * Class name of the inheriting class.
+     **/
+    private $class;
+
+    /**
      * Table name of the inheriting class.
      **/
     private $table;
@@ -15,6 +25,28 @@ class ModelBase
      **/
     private $fields;
 
+	/**
+	 * Initializes the class.
+	 **/
+	function __construct($app)
+	{
+		if (!isset($app)) {
+			throw new InvalidArgumentException('The $app argument should point to a valid MVC application.');
+		}
+
+        if (is_a($app, 'MVC')) {
+    		$this->app = $app;
+        }
+        else {
+            if (is_a($app, 'ControllerBase')) {
+                $this->app = $app->app;
+            }
+            else {
+    			throw new InvalidArgumentException('The $app argument should point to a valid MVC application.');
+            }
+        }
+	}
+
     /**
      * Gets the item with the specified ID.
      **/
@@ -23,11 +55,30 @@ class ModelBase
         $sql = 'select '.join(', ', $this->getFields()).' from '.$this->getTable().' where id = ?';
         $params = [$id];
 
-        print var_dump([$sql, $params]);
+        $query = $this->app->db->query($sql, $params);
+
+        if (!$query) {
+            return false;
+        }
+
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return false;
+        }
+
+        $class = $this->getClass();
+        $item = new $class($this->app);
+
+        foreach ($result as $key => $value) {
+            $item->$key = $value;
+        }
+
+        return $item;
     }
 
     /**
-     * Gets all the items, with condition if specified.
+     * Gets all the items, with condition when specified.
      **/
     public function getAll($where = null, $params = null)
     {
@@ -37,7 +88,26 @@ class ModelBase
             $sql .= ' where '.$where;
         }
 
-        print var_dump([$sql, $params]);
+        $query = $this->app->db->query($sql, $params);
+
+        if (!$query) {
+            return false;
+        }
+
+        $items = [];
+        $class = $this->getClass();
+
+        while ($result = $query->fetch(PDO::FETCH_ASSOC)) {
+            $item = new $class($this->app);
+
+            foreach ($result as $key => $value) {
+                $item->$key = $value;
+            }
+
+            $items[] = $item;
+        }
+
+        return $items;
     }
 
     /**
@@ -75,11 +145,16 @@ class ModelBase
             }
 
             $sql = rtrim($sql, ', ').')';
-
-            // before commit: $this->id = $db->lastInsertId();
         }
 
-        print var_dump([$sql, $params]);
+        $exec = $this->app->db->exec($sql, $params);
+
+        // set the ID of the insert as the ID of this object
+        if ($exec && !isset($this->id)) {
+            $this->id = (int)$this->app->db->lastInsertId();
+        }
+
+        return $exec;
     }
 
     /**
@@ -114,7 +189,23 @@ class ModelBase
 
         $sql .= ') engine=InnoDB default charset=utf8';
 
-        print var_dump($sql);
+        return $this->app->db->exec($sql, $params);
+    }
+
+    /**
+     * Gets the class name of the inheriting class.
+     **/
+    private function getClass()
+    {
+        // return cached if available
+
+        if (isset($this->class)) {
+            return $this->class;
+        }
+
+        // whip out the reflection engine
+
+        return $this->class = get_class($this);
     }
 
     /**
@@ -130,9 +221,7 @@ class ModelBase
 
         // whip out the reflection engine
 
-        $this->table = strtolower(get_class($this));
-
-        return $this->table;
+        return $this->table = strtolower($this->getClass());
     }
 
     /**
