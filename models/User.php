@@ -30,6 +30,26 @@ class User extends ModelBase
 	 **/
 	public $type;
 
+	/**
+	 * Sets a new password for the user.
+	 **/
+	public function setPassword($pass)
+	{
+		if (strlen($pass) < 4) {
+			throw new Exception('Password has to be at least 4 characters.');
+		}
+
+		$this->password = substr(password_hash($pass, PASSWORD_BCRYPT, ['cost' => 10]), 7);
+	}
+
+	/**
+	 * Verifies the specified password.
+	 **/
+	public function verifyPassword($pass)
+	{
+		return password_verify($pass, '$2y$10$'.$this->password);
+	}
+
 }
 
 /**

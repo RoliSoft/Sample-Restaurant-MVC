@@ -26,9 +26,31 @@ class Food extends ModelBase
 	public $calories;
 
 	/**
-	 * User rating of the food.
+	 * Number of users that have rated the food.
 	 **/
-	public $rating;
+	public $rate_cnt;
+
+	/**
+	 * Sum of the rates submitted by the users.
+	 **/
+	public $rate_sum;
+
+	/**
+	 * Adds a rating to the food.
+	 **/
+	public function addRating($score)
+	{
+		$this->rate_cnt++;
+		$this->rate_sum += $score;
+	}
+
+	/**
+	 * Gets the user rating of the food.
+	 **/
+	public function getRating()
+	{
+		return number_format($this->rate_sum / $this->rate_cnt, 2);
+	}
 
 }
 

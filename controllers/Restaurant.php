@@ -10,13 +10,50 @@ class Restaurant extends ControllerBase
 	 **/
 	public function Index()
 	{
+		$this->app->view->make('header');
+
 		print 'Welcome to the index!';
 
 		$food = new Food();
-		$food->id = 1;
 		$food->name = 'Pizza';
-		$food->type = 5;
+		$food->type = FoodTypes::Main;
+		$food->calories = 285;
+		$food->rate_cnt = 48;
+		$food->rate_sum = 216;
 		$food->create();
+		$food->save();
+
+		$user = new User();
+		$user->name = 'RoliSoft';
+		$user->setPassword('test');
+		$user->email = 'root@rolisoft.net';
+		$user->type = UserTypes::Admin;
+		$user->create();
+		$user->save();
+
+		$pass = new Pass();
+		$pass->name = 'Weekly';
+		$pass->meals = 5;
+		$pass->price = 50;
+		$pass->create();
+		$pass->save();
+
+		$menu = new Menu();
+		$menu->date = date('Y-m-d H:i:s');
+		$menu->food_id = 1;
+		$menu->create();
+		$menu->save();
+
+		$order = new Order();
+		$order->date = date('Y-m-d H:i:s');
+		$order->user_id = 1;
+		$order->pass_id = 1;
+		$order->gateway = Gateways::Stripe;
+		$order->sum = $pass->price;
+		$order->create();
+		$order->save();
+
+		$this->app->view->make('footer');
 	}
 
 	/**

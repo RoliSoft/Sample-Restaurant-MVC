@@ -24,6 +24,10 @@ class MVC
 	 **/
 	public $stripPath;
 
+	/**
+	 * Initialized view instance.
+	 **/
+	public $view;
 
 	/**
 	 * Initializes the class.
@@ -31,6 +35,7 @@ class MVC
 	function __construct()
 	{
 		$this->routes = [GET, POST];
+		$this->view = new View();
 	}
 
 	/**
