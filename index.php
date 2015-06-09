@@ -5,20 +5,20 @@ $app = new MVC();
 $app->db = new Database('.config.php');
 $app->stripPath = '/webproj';
 
-$app->route(GET,  '',			['Restaurant', 'Index']);
-$app->route(GET,  'today',		['Restaurant', 'Today']);
-$app->route(GET,  'week',		['Restaurant', 'Week']);
-$app->route(GET,  [':(monday|tuesday|wednesday|thursday|saturday|friday)'], ['Restaurant', 'Day']);
-$app->route(GET,  ['food/', ':([\w-]+)'], ['Restaurant', 'Food']);
+$app->route(GET,  '',			['Restaurant', 'index']);
+$app->route(GET,  'today',		['Restaurant', 'today']);
+$app->route(GET,  'week',		['Restaurant', 'week']);
+$app->route(GET,  [':(monday|tuesday|wednesday|thursday|saturday|friday)'], ['Restaurant', 'day']);
+$app->route(GET,  ['food/', ':([\w-]+)'], ['Restaurant', 'food']);
 
-$app->route(GET,  'login',		['Restaurant', 'Login']);
-$app->route(POST, 'login',		['Restaurant', 'DoLogin']);
-$app->route(GET,  'register',	['Restaurant', 'Register']);
-$app->route(POST, 'register',	['Restaurant', 'DoRegister']);
-$app->route(GET,  'reset',		['Restaurant', 'Reset']);
-$app->route(POST, 'reset',		['Restaurant', 'DoReset']);
-$app->route(POST, 'logout',		['Restaurant', 'DoLogout']);
+$app->route(GET,  'login',		['Restaurant', 'login']);
+$app->route(POST, 'login',		['Restaurant', 'doLogin']);
+$app->route(GET,  'register',	['Restaurant', 'register']);
+$app->route(POST, 'register',	['Restaurant', 'doRegister']);
+$app->route(GET,  'reset',		['Restaurant', 'reset']);
+$app->route(POST, 'reset',		['Restaurant', 'doReset']);
+$app->route(POST, 'logout',		['Restaurant', 'doLogout']);
 
-$app->route(POST, 'rate',		['Restaurant', 'DoRate']);
+$app->route(POST, 'rate',		['Restaurant', 'doRate']);
 
 $app->run();
