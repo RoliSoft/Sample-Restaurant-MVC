@@ -6,6 +6,7 @@ $app->db = new Database('.config.php');
 $app->stripPath = '/webproj';
 
 $app->route(GET,  '',			['Restaurant', 'index']);
+$app->route(GET,  'index',		['Restaurant', 'index']);
 $app->route(GET,  'today',		['Restaurant', 'today']);
 $app->route(GET,  'week',		['Restaurant', 'week']);
 $app->route(GET,  [':(monday|tuesday|wednesday|thursday|saturday|friday)'], ['Restaurant', 'day']);

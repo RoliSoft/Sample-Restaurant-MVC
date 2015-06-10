@@ -25,7 +25,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#">Sapientia Canteen</a>
+					<a class="navbar-brand" href="index">Sapientia Canteen</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
@@ -68,7 +68,7 @@
 													</label>
 												</div>
 												<div class="form-group">
-													<input type="hidden" name="token" value="If0sT2n2hte2Vhy_AUmM2LFjj7eeWtCAZaHED2RcKqCR-P0oJ_TaDyPauEkQHWfe" />
+													<input type="hidden" name="token" value="<?=$_SESSION['lgn_csrf']?>" />
 													<button type="submit" class="btn btn-success btn-block">Sign In</button>
 												</div>
 											</form>

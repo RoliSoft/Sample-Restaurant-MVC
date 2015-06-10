@@ -11,7 +11,7 @@
 	z-index: -1;
 }
 
-.login-dropdown .glyphicon-envelope {
+.login-dropdown .glyphicon-envelope, .agree-checkbox .glyphicon-envelope {
 	margin-right: 4px;
 	top: 2px;
 }
@@ -30,6 +30,18 @@
 
 .header-user-container {
 	width: auto;
+}
+
+.form-margin {
+	margin-bottom: 40px;
+}
+
+#rlpass {
+	margin-bottom: 15px;
+}
+
+.agree-checkbox {
+	padding-top: 1px !important;
 }
 
 .left {

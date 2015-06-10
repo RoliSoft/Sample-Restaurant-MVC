@@ -46,6 +46,9 @@ class MVC
 		$this->routes = [GET, POST];
 		$this->view = new View();
 		$this->cache = new Cache();
+
+		session_name('sid');
+		session_start();
 	}
 
 	/**
