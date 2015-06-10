@@ -1,36 +1,9 @@
 <?
 /**
- * Implements the main functions of the restaurant.
+ * Implements user management.
  */
-class Restaurant extends ControllerBase
+class UserMgmt extends ControllerBase
 {
-
-	/**
-	 * Generates the index page.
-	 */
-	public function index()
-	{
-		$this->app->view->make('header', $this->getHeaderVariables());
-
-		//$this->app->view->make('jumbotron', ['content' => '<h1>Some announcement.</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium, mi sit amet tempus finibus, lorem orci accumsan orci, efficitur commodo felis ipsum id nibh.</p>']);
-		$this->app->view->make('freetext', ['content' => '<p>Welcome to the index!</p>']);
-
-		$this->app->view->make('footer');
-	}
-
-	/**
-	 * Generates today's food choices page.
-	 */
-	public function today()
-	{
-	}
-
-	/**
-	 * Generates the weekly menu listing page.
-	 */
-	public function week()
-	{
-	}
 
 	/**
 	 * Generates the login page.
@@ -84,7 +57,7 @@ class Restaurant extends ControllerBase
 		];
 
 		if ($_POST['remember'] == 'on') {
-			setcookie('pid', $this->base64Encode($this->encrypt($user->id.'|'.$user->password)), 2000000000);
+			setcookie('pid', self::base64Encode(self::encrypt($user->id.'|'.$user->password)), 2000000000);
 		}
 
 		$this->app->view->make('header', $this->getHeaderVariables());
@@ -331,21 +304,14 @@ class Restaurant extends ControllerBase
 	}
 
 	/**
-	 * Rates a food on the menu.
-	 */
-	public function doRate()
-	{
-	}
-
-	/**
 	 * Generates a CSRF token and inserts it into the session variable.
 	 *
 	 * @param string $name Name of the token.
 	 */
-	private function generateCsrfToken($name)
+	private static function generateCsrfToken($name)
 	{
 		if (empty($_SESSION[$name.'_csrf'])) {
-			$_SESSION[$name.'_csrf'] = $this->base64Encode(openssl_random_pseudo_bytes(19));
+			$_SESSION[$name.'_csrf'] = self::base64Encode(openssl_random_pseudo_bytes(19));
 		}
 	}
 
@@ -357,9 +323,9 @@ class Restaurant extends ControllerBase
 	 *
 	 * @return bool Value indicating whether the sent token is valid.
 	 */
-	private function verifyCsrfToken($name, $value = null)
+	private static function verifyCsrfToken($name, $value = null)
 	{
-		$this->generateCsrfToken($name);
+		self::generateCsrfToken($name);
 
 		if (!isset($value)) {
 			$value = $_POST['token'];
@@ -373,9 +339,9 @@ class Restaurant extends ControllerBase
 	 *
 	 * @return array Pre-set variables.
      */
-	public function getHeaderVariables()
+	public static function getHeaderVariables()
 	{
-		$this->generateCsrfToken('lgn');
+		self::generateCsrfToken('lgn');
 
 		return [
 			'title' => 'Sapientia Canteen',
@@ -391,7 +357,8 @@ class Restaurant extends ControllerBase
 	 *
 	 * @return string Encoded string.
      */
-	function base64Encode($str) {
+	public static function base64Encode($str)
+	{
 		return rtrim(strtr(base64_encode($str), '+/=', '-_,'), ',');
 	}
 
@@ -402,7 +369,8 @@ class Restaurant extends ControllerBase
 	 *
 	 * @return string Decoded string.
 	 */
-	function base64Decode($str) {
+	public static function base64Decode($str)
+	{
 		return base64_decode(strtr($str, '-_,', '+/='));
 	}
 
@@ -414,7 +382,8 @@ class Restaurant extends ControllerBase
 	 *
 	 * @return string Encrypted string.
      */
-	function encrypt($str, $key = null) {
+	public static function encrypt($str, $key = null)
+	{
 		if (!isset($key)) {
 			$key = '%oX"ea(6Ef]SR@$F%bkTz:4tA?!WdI+#';
 		}
@@ -439,7 +408,8 @@ class Restaurant extends ControllerBase
 	 *
 	 * @return string Decrypted string.
 	 */
-	function decrypt($str, $key = null) {
+	public static function decrypt($str, $key = null)
+	{
 		if (!isset($key)) {
 			$key = '%oX"ea(6Ef]SR@$F%bkTz:4tA?!WdI+#';
 		}
