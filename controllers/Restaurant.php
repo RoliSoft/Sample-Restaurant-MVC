@@ -12,7 +12,8 @@ class Restaurant extends ControllerBase
 	{
 		$this->app->view->make('header');
 
-		print '<p>Welcome to the index!</p>';
+		//$this->app->view->make('jumbotron', ['content' => '<h1>Some announcement.</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium, mi sit amet tempus finibus, lorem orci accumsan orci, efficitur commodo felis ipsum id nibh.</p>']);
+		$this->app->view->make('freetext', ['content' => '<p>Welcome to the index!</p>']);
 
 		$this->app->view->make('footer');
 	}

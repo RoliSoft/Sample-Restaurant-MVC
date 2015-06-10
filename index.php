@@ -17,7 +17,7 @@ $app->route(GET,  'register',	['Restaurant', 'register']);
 $app->route(POST, 'register',	['Restaurant', 'doRegister']);
 $app->route(GET,  'reset',		['Restaurant', 'reset']);
 $app->route(POST, 'reset',		['Restaurant', 'doReset']);
-$app->route(POST, 'logout',		['Restaurant', 'doLogout']);
+$app->route(GET,  'logout',		['Restaurant', 'doLogout']);
 
 $app->route(POST, 'rate',		['Restaurant', 'doRate']);
 

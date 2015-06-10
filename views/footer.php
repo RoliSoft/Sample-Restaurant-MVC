@@ -1,2 +1,14 @@
-<hr />
-<p>Copyright&copy; <?=date('Y')?> RoliSoft</p>
+
+		<div class="container">
+			<hr>
+
+			<footer>
+				<p>&copy;<?=date('Y')?> RoliSoft &ndash; Developed as class asignment.</p>
+			</footer>
+		</div>
+
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/main.js"></script>
+	</body>
+</html>
