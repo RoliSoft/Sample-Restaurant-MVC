@@ -3,7 +3,7 @@
 			<hr>
 
 			<footer>
-				<p>&copy;<?=date('Y')?> RoliSoft &ndash; Developed as class asignment.</p>
+				<p>&copy;<?=date('Y')?> RoliSoft &ndash; Developed for a class asignment.</p>
 			</footer>
 		</div>
 

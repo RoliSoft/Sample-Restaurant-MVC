@@ -7,7 +7,7 @@ define('PATTERN', 1);
 
 /**
  * Implements MVC functionality.
- **/
+ */
 class MVC
 {
 
@@ -15,32 +15,32 @@ class MVC
 	 * Contains the route mappings.
 	 * Array structure is:
 	 *   GET/POST -> DIRECT/PATTERN -> PATH -> HANDLER
-	 **/
+	 */
 	protected $routes;
 
 	/**
 	 * Path to strip from the request URI before processing.
-	 **/
+	 */
 	public $stripPath;
 
 	/**
 	 * Initialized view instance.
-	 **/
+	 */
 	public $view;
 
 	/**
 	 * Initialized database instance.
-	 **/
+	 */
 	public $db;
 
 	/**
 	 * Initialized cache instance.
-	 **/
+	 */
 	public $cache;
 
 	/**
 	 * Initializes the class.
-	 **/
+	 */
 	function __construct()
 	{
 		$this->routes = [GET, POST];
@@ -50,7 +50,11 @@ class MVC
 
 	/**
 	 * Sets up a route.
-	 **/
+	 *
+	 * @param string $method Request method, GET or POST.
+	 * @param string $path Request URI.
+	 * @param array $handler Callback function.
+	 */
 	public function route($method, $path, $handler)
 	{
 		if (!is_array($path)) {
@@ -63,7 +67,9 @@ class MVC
 
 	/**
 	 * Runs the application.
-	 **/
+	 *
+	 * @throws Exception No handler found for the route or class/method does not exist.
+	 */
 	public function run()
 	{
 		// try and find a handler for the request
@@ -104,7 +110,12 @@ class MVC
 
 	/**
 	 * Gets the handler callback for the specified method and path.
-	 **/
+	 *
+	 * @param string $method Request method, GET or POST.
+	 * @param string $path Request URI.
+	 *
+	 * @return array|null Array containing handler callback and arguments, or null on failure.
+	 */
 	private function getHandler($method, $path)
 	{
 		// try to find a direct path first

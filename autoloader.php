@@ -1,8 +1,7 @@
 <?
 /**
  * This file auto-loads all the required classes for a given request.
- **/
-
+ */
 spl_autoload_register(function ($class) {
 	$paths = ['./', './controllers/', './models/'];
 

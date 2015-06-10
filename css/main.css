@@ -1,35 +1,35 @@
 .jumbotron {
-    margin-top: -36px;
+	margin-top: -36px;
 }
 
 .login-dropdown {
-    padding: 15px;
-    min-width: 250px
+	padding: 15px;
+	min-width: 250px
 }
 
 .remember-checkbox {
-    z-index: -1;
+	z-index: -1;
 }
 
 .login-dropdown .glyphicon-envelope {
-    margin-right: 4px;
-    top: 2px;
+	margin-right: 4px;
+	top: 2px;
 }
 
 .login-dropdown .input-group {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .login-dropdown .input-group-addon {
-    padding: 0px 8px;
+	padding: 0px 8px;
 }
 
 .login-dropdown .form-group {
-    margin-bottom: 0px;
+	margin-bottom: 0px;
 }
 
 .header-user-container {
-    width: auto;
+	width: auto;
 }
 
 .left {
@@ -41,5 +41,5 @@
 }
 
 footer {
-    text-align: center;
+	text-align: center;
 }
