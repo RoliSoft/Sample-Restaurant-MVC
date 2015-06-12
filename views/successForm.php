@@ -4,6 +4,9 @@
                     <div class="page-header">
                         <h1><?=$title?></h1>
                     </div>
+<? if ($redirect): ?>
+                    <meta http-equiv="refresh" content="2; url=<?=$redirect?>">
+<? endif; ?>
                     <div class="alert alert-<?=$type?>"><span class="glyphicon glyphicon-<?=$icon?>"></span> <?=$text?></div>
                     <div class="form-group">
                         <div class="col-sm-12" align="right">

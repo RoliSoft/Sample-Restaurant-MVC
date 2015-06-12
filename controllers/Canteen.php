@@ -41,12 +41,45 @@ class Canteen extends ControllerBase
 
 	/**
 	 * Generates the 404 Not Found page.
+	 *
+	 * @param string $uri Requested non-existing URI.
 	 */
-	public function notFound()
+	public function notFound($uri)
 	{
 		$this->app->view->make('header', UserMgmt::getHeaderVariables());
 		$this->app->view->make('jumbotron', [
 			'content' => '<h1>Page Not Found</h1><p>The requested resource could not be found.</p>'
+		]);
+		$this->app->view->make('footer');
+	}
+
+	/**
+	 * Generates the unhandled exception page.
+	 *
+	 * @param Exception $ex Thrown exception.
+	 */
+	public function handleException($ex)
+	{
+		$this->app->view->make('header', UserMgmt::getHeaderVariables());
+		$this->app->view->make('jumbotron', [
+			'content' => '<h1>An Error Occurred</h1><p>The requested resource could not be satisfied at this time due to an unexpected run-time exception.</p><p><pre><big>'.$ex->getMessage().'</big><br /><small>'.$ex->getTraceAsString().'</small></pre></p>'
+		]);
+		$this->app->view->make('footer');
+	}
+
+	/**
+	 * Generates the unhandled exception page.
+	 *
+	 * @param int $errno Level of the error raised.
+	 * @param string $errstr Error message.
+	 * @param string $errfile Filename that the error was raised in.
+	 * @param int $errline Line number the error was raised at.
+	 */
+	public function handleError($errno, $errstr, $errfile, $errline)
+	{
+		$this->app->view->make('header', UserMgmt::getHeaderVariables());
+		$this->app->view->make('jumbotron', [
+			'content' => '<h1>An Error Occurred</h1><p>The requested resource could not be satisfied at this time due to an unexpected run-time error.</p><p><pre><big>'.$errstr.'</big><br /><small>'.$errfile.':'.$errline.'</small></pre></p>'
 		]);
 		$this->app->view->make('footer');
 	}

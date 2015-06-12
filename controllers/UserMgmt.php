@@ -349,6 +349,26 @@ class UserMgmt extends ControllerBase
 	}
 
 	/**
+	 * Gets a value indicating whether the user is signed in.
+	 *
+	 * @return bool Value indicating whether the user is signed in.
+     */
+	public static function isSignedIn()
+	{
+		return !empty($_SESSION['user']);
+	}
+
+	/**
+	 * Gets a value indicating whether the user is an administrator.
+	 *
+	 * @return bool Value indicating whether the user is an administrator.
+	 */
+	public static function isAdmin()
+	{
+		return $_SESSION['user']['type'] == 0;
+	}
+
+	/**
 	 * Encodes the input to Base64/URL.
 	 *
 	 * @param string $str String to encode.

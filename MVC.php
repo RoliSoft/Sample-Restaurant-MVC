@@ -6,6 +6,9 @@ define('SPEC', 'SPEC');
 define('DIRECT', 0);
 define('PATTERN', 1);
 
+define('EXC', 0);
+define('ERR', 1);
+
 /**
  * Implements MVC functionality.
  */
@@ -102,7 +105,7 @@ class MVC
 			header('HTTP/1.0 404 Not Found', true, 404);
 
 			if (isset($this->routes[SPEC][404])) {
-				$handler = [$this->routes[SPEC][404], []];
+				$handler = [$this->routes[SPEC][404], [$path]];
 			}
 			else {
 				throw new Exception('No handler found for the route nor was a 404 handler available.');
@@ -125,7 +128,23 @@ class MVC
 			throw new Exception('Class "'.$class.'" does not have method "'.$method.'".');
 		}
 
+		set_error_handler([$this, 'handleError'], E_ALL & ~E_NOTICE);
+		set_exception_handler([$this, 'handleException']);
+
+		if (method_exists($controller, 'enter')) {
+			if (!$controller->enter($method, $arguments)) {
+				return;
+			}
+		}
+
 		$controller->$method($arguments);
+
+		if (method_exists($controller, 'exit')) {
+			$controller->exit($method, $arguments);
+		}
+
+		restore_exception_handler();
+		restore_error_handler();
 	}
 
 	/**
@@ -184,6 +203,47 @@ class MVC
 		// give up
 
 		return null;
+	}
+
+	/**
+	 * Global exception handler.
+	 *
+	 * @param Exception $ex Thrown exception.
+     */
+	public function handleException($ex)
+	{
+		if (isset($this->routes[SPEC][EXC]) && is_callable($this->routes[SPEC][EXC])) {
+			list($class, $method) = $this->routes[SPEC][EXC];
+			$controller = new $class($this);
+			$controller->$method($ex);
+		}
+		else {
+			print 'An exception occurred during the execution of the script, and an exception handler was not available to process it.<br />Error message: '.$ex->getMessage();
+		}
+
+		die();
+	}
+
+	/**
+	 * Global error handler.
+	 *
+	 * @param int $errno Level of the error raised.
+	 * @param string $errstr Error message.
+	 * @param string $errfile Filename that the error was raised in.
+	 * @param int $errline Line number the error was raised at.
+	 */
+	public function handleError($errno, $errstr, $errfile, $errline)
+	{
+		if (isset($this->routes[SPEC][ERR]) && is_callable($this->routes[SPEC][ERR])) {
+			list($class, $method) = $this->routes[SPEC][ERR];
+			$controller = new $class($this);
+			$controller->$method($errno, $errstr, $errfile, $errline);
+		}
+		else {
+			print 'An error occurred during the execution of the script, and an error handler was not available to process it.<br />Error message: '.$errstr;
+		}
+
+		die();
 	}
 
 }

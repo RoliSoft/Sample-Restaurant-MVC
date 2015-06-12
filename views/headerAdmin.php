@@ -30,16 +30,17 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="index"><i class="fa fa-cutlery"></i>&nbsp; Sapientia Canteen</a>
+					<a class="navbar-brand" href="index"><i class="fa fa-cogs"></i>&nbsp; Canteen Administration</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
-<? if ($signedIn && $isAdmin): ?>
 					<ul class="nav navbar-nav">
-						<li><a href="admin"><i class="fa fa-cogs"></i> Administration</a></li>
+						<li><a href="admin-foods"><i class="fa fa-cutlery"></i> Foods</a></li>
+						<li><a href="admin-menu"><i class="fa fa-calendar"></i> Menu</a></li>
+						<li><a href="admin-passes"><i class="fa fa-ticket"></i> Passes</a></li>
+						<li><a href="admin-orders"><i class="fa fa-credit-card"></i> Orders</a></li>
+						<li><a href="admin-users"><i class="fa fa-group"></i> Users</a></li>
 					</ul>
-<? endif; ?>
 					<ul class="nav navbar-nav navbar-right">
-<? if ($signedIn): ?>
 						<li class="dropdown">
 							<a href="login" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?=$user?> <b class="caret"></b></a>
 							<ul class="login-dropdown dropdown-menu">
@@ -50,44 +51,6 @@
 								</li>
 							</ul>
 						</li>
-<? else: ?>
-						<li><a href="register"><i class="fa fa-pencil-square-o"></i> Sign Up</a></li>
-						<li class="dropdown">
-							<a href="login" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sign-in"></i> Sign In <b class="caret"></b></a>
-							<ul class="login-dropdown dropdown-menu">
-								<li>
-									<div class="row">
-										<div class="col-md-12">
-											<form class="form" method="post" action="login">
-												<div class="input-group">
-													<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-													<input type="text" class="form-control" name="user" placeholder="Email" required />
-												</div>
-												<div class="input-group">
-													<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-													<input type="password" class="form-control" name="pass" placeholder="Password" required />
-												</div>
-												<div class="right">
-													<label>
-														<a href="reset"><i class="glyphicon glyphicon-envelope"></i>Reset pass.</a>
-													</label>
-												</div>
-												<div class="checkbox remember-checkbox">
-													<label>
-														<input type="checkbox" name="remember" checked="checked" /> Remember me
-													</label>
-												</div>
-												<div class="form-group">
-													<input type="hidden" name="token" value="<?=$_SESSION['lgn_csrf']?>" />
-													<button type="submit" class="btn btn-success btn-block">Sign In</button>
-												</div>
-											</form>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</li>
-<? endif; ?>
 					</ul>
 				</div>
 			</div>

@@ -33,7 +33,7 @@
                             <div class="col-sm-5" align="right">
                                 <div class="checkbox agree-checkbox">
                                     <label>
-                                        <a href="reset"><i class="glyphicon glyphicon-envelope"></i>Reset password</a>
+                                        <a href="reset"><i class="glyphicon glyphicon-envelope"></i> Reset password</a>
                                     </label>
                                 </div>
                             </div>
