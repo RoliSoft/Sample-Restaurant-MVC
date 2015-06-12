@@ -50,11 +50,8 @@ class UserMgmt extends ControllerBase
 			$error = 'Specified username or password is incorrect.';
 		}
 
-		$_SESSION['user'] = [
-			'id' => $user->id,
-			'name' => $user->name,
-			'time' => time()
-		];
+		$_SESSION['user'] = $user->toArray();
+		$_SESSION['user']['time'] = time();
 
 		if ($_POST['remember'] == 'on') {
 			setcookie('pid', self::base64Encode(self::encrypt($user->id.'|'.$user->password)), 2000000000);
@@ -338,7 +335,7 @@ class UserMgmt extends ControllerBase
 	 * Generates the variables to be passed to the header.
 	 *
 	 * @return array Pre-set variables.
-     */
+	 */
 	public static function getHeaderVariables()
 	{
 		self::generateCsrfToken('lgn');
@@ -346,6 +343,7 @@ class UserMgmt extends ControllerBase
 		return [
 			'title' => 'Sapientia Canteen',
 			'signedIn' => !empty($_SESSION['user']),
+			'isAdmin' => $_SESSION['user']['type'] == 0,
 			'user' => $_SESSION['user']['name']
 		];
 	}
@@ -356,7 +354,7 @@ class UserMgmt extends ControllerBase
 	 * @param string $str String to encode.
 	 *
 	 * @return string Encoded string.
-     */
+	 */
 	public static function base64Encode($str)
 	{
 		return rtrim(strtr(base64_encode($str), '+/=', '-_,'), ',');
@@ -381,7 +379,7 @@ class UserMgmt extends ControllerBase
 	 * @param string $key Encryption key.
 	 *
 	 * @return string Encrypted string.
-     */
+	 */
 	public static function encrypt($str, $key = null)
 	{
 		if (!isset($key)) {

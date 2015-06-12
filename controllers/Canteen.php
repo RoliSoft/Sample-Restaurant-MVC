@@ -39,4 +39,16 @@ class Canteen extends ControllerBase
 	{
 	}
 
+	/**
+	 * Generates the 404 Not Found page.
+	 */
+	public function notFound()
+	{
+		$this->app->view->make('header', UserMgmt::getHeaderVariables());
+		$this->app->view->make('jumbotron', [
+			'content' => '<h1>Page Not Found</h1><p>The requested resource could not be found.</p>'
+		]);
+		$this->app->view->make('footer');
+	}
+
 }

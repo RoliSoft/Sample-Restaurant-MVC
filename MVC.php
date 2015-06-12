@@ -1,6 +1,7 @@
 <?
 define('GET', 'GET');
 define('POST', 'POST');
+define('SPEC', 'SPEC');
 
 define('DIRECT', 0);
 define('PATTERN', 1);
@@ -43,7 +44,11 @@ class MVC
 	 */
 	function __construct()
 	{
-		$this->routes = [GET, POST];
+		$this->routes = [
+			GET  => [ DIRECT => [], PATTERN => [] ],
+			POST => [ DIRECT => [], PATTERN => [] ],
+			SPEC => []
+		];
 		$this->view = new View();
 		$this->cache = new Cache();
 
@@ -60,11 +65,16 @@ class MVC
 	 */
 	public function route($method, $path, $handler)
 	{
-		if (!is_array($path)) {
-			$this->routes[$method][DIRECT][$path] = $handler;
+		if ($method != SPEC) {
+			if (!is_array($path)) {
+				$this->routes[$method][DIRECT][$path] = $handler;
+			}
+			else {
+				$this->routes[$method][PATTERN][] = [$path, $handler];
+			}
 		}
 		else {
-			$this->routes[$method][PATTERN][] = [$path, $handler];
+			$this->routes[$method][$path] = $handler;
 		}
 	}
 
@@ -88,11 +98,18 @@ class MVC
 
 		$handler = $this->getHandler($method, $path);
 
-		// set up the handler and invoke it
-
 		if ($handler === null) {
-			throw new Exception('No handler found for the route.');
+			header('HTTP/1.0 404 Not Found', true, 404);
+
+			if (isset($this->routes[SPEC][404])) {
+				$handler = [$this->routes[SPEC][404], []];
+			}
+			else {
+				throw new Exception('No handler found for the route nor was a 404 handler available.');
+			}
 		}
+
+		// set up the handler and invoke it
 
 		$class = $handler[0][0];
 		$method = $handler[0][1];

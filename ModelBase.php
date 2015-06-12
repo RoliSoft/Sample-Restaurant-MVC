@@ -208,6 +208,23 @@ class ModelBase
 	}
 
 	/**
+	 * Convers the object into an array.
+	 *
+	 * @return array Array containing all key-values.
+     */
+	public function toArray()
+	{
+		$array = [];
+		$fields = $this->getFields();
+
+		foreach ($fields as $field) {
+			$array[$field] = $this->$field;
+		}
+
+		return $array;
+	}
+
+	/**
 	 * Gets the class name of the inheriting class.
      *
      * @return string Name of the inheriting class.

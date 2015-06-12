@@ -11,6 +11,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" href="favicon.ico">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
 		<link rel="stylesheet" href="css/main.css">
 		<!--[if lt IE 9]>
 				<script src="js/vendor/html5-respond.min.js"></script>
@@ -26,13 +27,18 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="index">Sapientia Canteen</a>
+					<a class="navbar-brand" href="index"><i class="fa fa-cutlery"></i>&nbsp; Sapientia Canteen</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
+<? if ($signedIn && $isAdmin): ?>
+					<ul class="nav navbar-nav">
+						<li><a href="admin"><i class="fa fa-cogs"></i> Administration</a></li>
+					</ul>
+<? endif; ?>
 					<ul class="nav navbar-nav navbar-right">
 <? if ($signedIn): ?>
 						<li class="dropdown">
-							<a href="login" class="dropdown-toggle" data-toggle="dropdown"><?=$user?> <b class="caret"></b></a>
+							<a href="login" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?=$user?> <b class="caret"></b></a>
 							<ul class="login-dropdown dropdown-menu">
 								<li>
 									<div class="container header-user-container">
@@ -42,9 +48,9 @@
 							</ul>
 						</li>
 <? else: ?>
-						<li><a href="register">Sign Up</a></li>
+						<li><a href="register"><i class="fa fa-pencil-square-o"></i> Sign Up</a></li>
 						<li class="dropdown">
-							<a href="login" class="dropdown-toggle" data-toggle="dropdown">Sign In <b class="caret"></b></a>
+							<a href="login" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sign-in"></i> Sign In <b class="caret"></b></a>
 							<ul class="login-dropdown dropdown-menu">
 								<li>
 									<div class="row">

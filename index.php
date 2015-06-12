@@ -22,4 +22,6 @@ $app->route(GET,  'reset',		['UserMgmt', 'reset']);
 $app->route(POST, 'reset',		['UserMgmt', 'doReset']);
 $app->route(GET,  'logout',		['UserMgmt', 'doLogout']);
 
+$app->route(SPEC,  404,		    ['Canteen', 'notFound']);
+
 $app->run();
