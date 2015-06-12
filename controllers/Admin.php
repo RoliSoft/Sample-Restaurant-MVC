@@ -35,9 +35,53 @@ class Admin extends ControllerBase
 	public function index()
 	{
 		$this->app->view->make('headerAdmin', UserMgmt::getHeaderVariables());
-		//$this->app->view->make('jumbotron', ['content' => '<h1>Some announcement.</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium, mi sit amet tempus finibus, lorem orci accumsan orci, efficitur commodo felis ipsum id nibh.</p>']);
 		$this->app->view->make('freetext', ['content' => '<p>Hi admin!</p>']);
 		$this->app->view->make('footer');
+	}
+
+	/**
+	 * Generates the foods page.
+	 */
+	public function foods()
+	{
+		$crud = new CrudHelper($this, 'Food', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud->make();
+	}
+
+	/**
+	 * Generates the menu page.
+	 */
+	public function menu()
+	{
+		$crud = new CrudHelper($this, 'Menu', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud->make();
+	}
+
+	/**
+	 * Generates the passes page.
+	 */
+	public function passes()
+	{
+		$crud = new CrudHelper($this, 'Pass', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud->make();
+	}
+
+	/**
+	 * Generates the orders page.
+	 */
+	public function orders()
+	{
+		$crud = new CrudHelper($this, 'Order', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud->make();
+	}
+
+	/**
+	 * Generates the users page.
+	 */
+	public function users()
+	{
+		$crud = new CrudHelper($this, 'User', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud->make();
 	}
 
 }

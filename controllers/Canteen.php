@@ -48,7 +48,7 @@ class Canteen extends ControllerBase
 	{
 		$this->app->view->make('header', UserMgmt::getHeaderVariables());
 		$this->app->view->make('jumbotron', [
-			'content' => '<h1>Page Not Found</h1><p>The requested resource could not be found.</p>'
+			'content' => '<h1><i class="fa fa-exclamation-circle breathe-shadow"></i> Page Not Found</h1><p>The requested resource could not be found on the server.</p>'
 		]);
 		$this->app->view->make('footer');
 	}
@@ -62,7 +62,7 @@ class Canteen extends ControllerBase
 	{
 		$this->app->view->make('header', UserMgmt::getHeaderVariables());
 		$this->app->view->make('jumbotron', [
-			'content' => '<h1>An Error Occurred</h1><p>The requested resource could not be satisfied at this time due to an unexpected run-time exception.</p><p><pre><big>'.$ex->getMessage().'</big><br /><small>'.$ex->getTraceAsString().'</small></pre></p>'
+			'content' => '<h1><i class="fa fa-exclamation-circle breathe-shadow"></i> An Error Occurred</h1><p>The requested resource could not be satisfied at this time due to an unexpected run-time exception.</p><p><pre><big>'.$ex->getMessage().'</big><br /><small>'.$ex->getTraceAsString().'</small></pre></p>'
 		]);
 		$this->app->view->make('footer');
 	}
@@ -79,7 +79,7 @@ class Canteen extends ControllerBase
 	{
 		$this->app->view->make('header', UserMgmt::getHeaderVariables());
 		$this->app->view->make('jumbotron', [
-			'content' => '<h1>An Error Occurred</h1><p>The requested resource could not be satisfied at this time due to an unexpected run-time error.</p><p><pre><big>'.$errstr.'</big><br /><small>'.$errfile.':'.$errline.'</small></pre></p>'
+			'content' => '<h1><i class="fa fa-exclamation-circle breathe-shadow"></i> An Error Occurred</h1><p>The requested resource could not be satisfied at this time due to an unexpected run-time error.</p><p><pre><big>'.$errstr.'</big><br /><small>'.$errfile.':'.$errline.'</small></pre></p>'
 		]);
 		$this->app->view->make('footer');
 	}

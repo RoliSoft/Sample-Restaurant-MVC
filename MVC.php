@@ -88,6 +88,9 @@ class MVC
 	 */
 	public function run()
 	{
+		set_error_handler([$this, 'handleError'], E_ALL & ~E_NOTICE);
+		set_exception_handler([$this, 'handleException']);
+
 		// try and find a handler for the request
 
 		$method = $_SERVER['REQUEST_METHOD'];
@@ -127,9 +130,6 @@ class MVC
 		if (!method_exists($controller, $method)) {
 			throw new Exception('Class "'.$class.'" does not have method "'.$method.'".');
 		}
-
-		set_error_handler([$this, 'handleError'], E_ALL & ~E_NOTICE);
-		set_exception_handler([$this, 'handleException']);
 
 		if (method_exists($controller, 'enter')) {
 			if (!$controller->enter($method, $arguments)) {

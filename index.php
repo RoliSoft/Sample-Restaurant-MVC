@@ -24,15 +24,15 @@ $app->route(GET,  'logout',		['UserMgmt', 'doLogout']);
 
 $app->route(GET,  'admin',		  ['Admin', 'index']);
 $app->route(GET,  'admin-foods',  ['Admin', 'foods']);
-$app->route(POST, 'admin-foods',  ['Admin', 'doFoods']);
+$app->route(POST, 'admin-foods',  ['Admin', 'foods']);
 $app->route(GET,  'admin-menu',	  ['Admin', 'menu']);
-$app->route(POST, 'admin-menu',	  ['Admin', 'doMenu']);
+$app->route(POST, 'admin-menu',	  ['Admin', 'menu']);
 $app->route(GET,  'admin-passes', ['Admin', 'passes']);
-$app->route(POST, 'admin-passes', ['Admin', 'doPasses']);
+$app->route(POST, 'admin-passes', ['Admin', 'passes']);
 $app->route(GET,  'admin-orders', ['Admin', 'orders']);
-$app->route(POST, 'admin-orders', ['Admin', 'doOrders']);
+$app->route(POST, 'admin-orders', ['Admin', 'orders']);
 $app->route(GET,  'admin-users',  ['Admin', 'users']);
-$app->route(POST, 'admin-users',  ['Admin', 'doUsers']);
+$app->route(POST, 'admin-users',  ['Admin', 'users']);
 
 $app->route(SPEC,  404,		    ['Canteen', 'notFound']);
 $app->route(SPEC,  EXC,		    ['Canteen', 'handleException']);
