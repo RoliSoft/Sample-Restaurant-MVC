@@ -35,6 +35,21 @@ class Order extends ModelBase
 	 */
 	public $sum;
 
+	/**
+	 * Initializes the class.
+	 *
+	 * @param MVC $app Calling MVC instance.
+	 */
+	function __construct($app)
+	{
+		parent::__construct($app);
+		parent::setField('date', ['datetime']);
+		parent::setField('user_id', ['int', ['foreign_key' => 'User']]);
+		parent::setField('pass_id', ['int', ['foreign_key' => 'Pass']]);
+		parent::setField('gateway', ['int', ['enum' => 'Gateways']]);
+		parent::setField('sum', ['int', ['suffix' => 'RON']]);
+	}
+
 }
 
 /**

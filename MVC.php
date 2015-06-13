@@ -43,6 +43,21 @@ class MVC
 	public $cache;
 
 	/**
+	 * Request method used for this request, populated by run() before invoking the controller method.
+	 */
+	public $method;
+
+	/**
+	 * Cleaned request path of this request, populated by run() before invoking the controller method.
+	 */
+	public $path;
+
+	/**
+	 * Parsed query string of this request, populated by run() before invoking the controller method.
+	 */
+	public $query;
+
+	/**
 	 * Initializes the class.
 	 */
 	function __construct()
@@ -100,7 +115,16 @@ class MVC
 			$path = substr($path, strlen($this->stripPath));
 		}
 
+		if (($qpos = strpos($path, '?')) !== false) {
+			parse_str(substr($path, $qpos + 1), $query);
+			$path = substr($path, 0, $qpos);
+		}
+
 		$path = trim($path, '/');
+
+		$this->method = $method;
+		$this->path   = $path;
+		$this->query  = $query;
 
 		$handler = $this->getHandler($method, $path);
 
@@ -160,7 +184,7 @@ class MVC
 		// try to find a direct path first
 
 		if (isset($this->routes[$method][DIRECT][$path])) {
-			return [$this->routes[$method][DIRECT][$path]];
+			return [$this->routes[$method][DIRECT][$path], []];
 		}
 
 		// try to find a path with arguments

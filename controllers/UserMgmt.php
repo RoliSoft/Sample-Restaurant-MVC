@@ -50,11 +50,13 @@ class UserMgmt extends ControllerBase
 			$error = 'Specified username or password is incorrect.';
 		}
 
-		$_SESSION['user'] = $user->toArray();
-		$_SESSION['user']['time'] = time();
+		if (!$error) {
+			$_SESSION['user'] = $user->toArray();
+			$_SESSION['user']['time'] = time();
 
-		if ($_POST['remember'] == 'on') {
-			setcookie('pid', self::base64Encode(self::encrypt($user->id.'|'.$user->password)), 2000000000);
+			if ($_POST['remember'] == 'on') {
+				setcookie('pid', self::base64Encode(self::encrypt($user->id . '|' . $user->password)), 2000000000);
+			}
 		}
 
 		$this->app->view->make('header', $this->getHeaderVariables());

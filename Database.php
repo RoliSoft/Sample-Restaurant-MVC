@@ -8,7 +8,7 @@ class Database extends PDO
 	/**
 	 * Value indicating whether there is an active connection to the database.
 	 */
-	private $isConnected = false;
+	private $connected = false;
 
 	/**
 	 * Stores a history of queries ran in this session for debugging purposes.
@@ -64,7 +64,7 @@ class Database extends PDO
 	 */
 	protected function connect()
 	{
-		if (!$this->isConnected) {
+		if (!$this->connected) {
 			try {
 				@(parent::__construct($this->dsn, $this->username, $this->password, $this->driver_options));
 			}
@@ -76,7 +76,7 @@ class Database extends PDO
 				return false;
 			}
 
-			$this->isConnected = true;
+			$this->connected = true;
 		}
 
 		return true;
@@ -100,7 +100,7 @@ class Database extends PDO
 		$this->queries[] = &$log;
 		$start = microtime(true);
 
-		if ($params) {
+		if (isset($params)) {
 			$result = parent::prepare($sql);
 			$result->setFetchMode(PDO::FETCH_ASSOC);
 			$result->execute($params);
@@ -131,7 +131,7 @@ class Database extends PDO
 		$this->queries[] = &$log;
 		$start = microtime(true);
 
-		if ($params) {
+		if (isset($params)) {
 			$result = parent::prepare($sql)->execute($params);
 		}
 		else {
@@ -155,7 +155,7 @@ class Database extends PDO
 		if (preg_match('/^\d*$/', $var)) {
 			return (int)$var;
 		}
-		elseif ($this->isConnected) {
+		elseif ($this->connected) {
 			return parent::quote($var, $paramtype);
 		}
 		else {

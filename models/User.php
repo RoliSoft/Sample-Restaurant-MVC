@@ -31,6 +31,18 @@ class User extends ModelBase
 	public $type;
 
 	/**
+	 * Initializes the class.
+	 *
+	 * @param MVC $app Calling MVC instance.
+	 */
+	function __construct($app)
+	{
+		parent::__construct($app);
+		parent::setField('type', ['int', ['enum' => 'UserTypes']]);
+		parent::setField('password', ['string', ['hidden' => true]]);
+	}
+
+	/**
 	 * Sets a new password for the user.
 	 *
 	 * @param string $pass Unencrypted password to set.

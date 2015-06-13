@@ -20,4 +20,16 @@ class Menu extends ModelBase
 	 */
 	public $food_id;
 
+	/**
+	 * Initializes the class.
+	 *
+	 * @param MVC $app Calling MVC instance.
+	 */
+	function __construct($app)
+	{
+		parent::__construct($app);
+		parent::setField('date', ['date']);
+		parent::setField('food_id', ['int', ['foreign_key' => 'Food']]);
+	}
+
 }

@@ -41,6 +41,21 @@ class Food extends ModelBase
 	public $rate_sum;
 
 	/**
+	 * Initializes the class.
+	 *
+	 * @param MVC $app Calling MVC instance.
+	 */
+	function __construct($app)
+	{
+		parent::__construct($app);
+		parent::setField('type', ['int', ['enum' => 'FoodTypes']]);
+		parent::setField('calories', ['int', ['suffix' => 'cal']]);
+		parent::setField('price', ['int', ['suffix' => 'RON']]);
+		parent::setField('rate_cnt', ['int', ['name' => 'Rate Count', 'readonly' => true]]);
+		parent::setField('rate_sum', ['int', ['name' => 'Rate Sum', 'readonly' => true]]);
+	}
+
+	/**
 	 * Adds a rating to the food.
 	 *
 	 * @param int $score Score of food.

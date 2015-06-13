@@ -25,4 +25,16 @@ class Pass extends ModelBase
 	 */
 	public $price;
 
+	/**
+	 * Initializes the class.
+	 *
+	 * @param MVC $app Calling MVC instance.
+	 */
+	function __construct($app)
+	{
+		parent::__construct($app);
+		parent::setField('meals', ['int']);
+		parent::setField('price', ['int', ['suffix' => 'RON']]);
+	}
+
 }

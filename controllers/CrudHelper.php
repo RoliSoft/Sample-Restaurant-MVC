@@ -16,6 +16,11 @@ class CrudHelper
     public $type;
 
     /**
+     * Fields of the wrapped model type.
+     */
+    public $fields;
+
+    /**
      * Name of the header template to use.
      */
     public $headerView;
@@ -70,19 +75,81 @@ class CrudHelper
             throw new Exception('The $type argument should point to a valid ModelBase-inheriting type.');
         }
 
-        $this->app  = $app;
         $this->type = $type;
 
         $this->headerView = $headerView;
         $this->headerArgs = $headerArgs;
         $this->footerView = $footerView;
         $this->footerArgs = $footerArgs;
+
+        $instance = new $type($app);
+        $this->fields = $instance->getFields();
+	    $this->fixFields();
     }
 
+	/**
+	 * Fixes the fields array, by populating missing info.
+	 */
+	private function fixFields()
+	{
+		foreach ($this->fields as $field => $type) {
+			if (!isset($type[1]['name'])) {
 
-    public function make()
+				if ($field == 'id') {
+					$this->fields[$field][1]['name'] = 'ID';
+				}
+				else {
+					$this->fields[$field][1]['name'] = ucwords(str_replace('_', ' ', $field));
+
+					if (substr($this->fields[$field][1]['name'], -3) === ' Id') {
+						$this->fields[$field][1]['name'] = substr($this->fields[$field][1]['name'], 0, strlen($this->fields[$field][1]['name']) - 3);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Runs the application.
+	 */
+    public function run()
     {
+        switch ($this->app->method) {
 
+            case GET: {
+
+	            $this->listRecords();
+
+            } break;
+
+            case POST: {
+
+            } break;
+
+        }
+    }
+
+	/**
+	 * Generates a table displaying the records in the database.
+	 */
+    private function listRecords()
+    {
+	    $table = new $this->type($this->app);
+	    $records = $table->getAll();
+
+	    if (empty($records)) {
+		    $records = [];
+	    }
+
+	    if (isset($this->headerView)) {
+		    $this->app->view->make($this->headerView, $this->headerArgs);
+	    }
+
+	    $this->app->view->make('crud/table', ['fields' => $this->fields, 'records' => $records]);
+
+	    if (isset($this->footerView)) {
+		    $this->app->view->make($this->footerView, $this->footerArgs);
+	    }
     }
 
 }

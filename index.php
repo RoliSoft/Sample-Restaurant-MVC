@@ -1,4 +1,5 @@
 <?
+//error_reporting(E_ALL);
 include 'autoloader.php';
 
 $app = new MVC();

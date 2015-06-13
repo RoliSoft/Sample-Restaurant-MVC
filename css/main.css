@@ -44,6 +44,10 @@
 	padding-top: 1px !important;
 }
 
+td small {
+	font-size: 83%;
+}
+
 .left {
 	float: left;
 }

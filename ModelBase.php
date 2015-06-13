@@ -28,6 +28,8 @@ class ModelBase
 	/**
 	 * Initializes the class.
 	 *
+	 * @param MVC $app Calling MVC instance.
+	 *
 	 * @throws Exception The $app argument should point to a valid MVC application.
 	 */
 	function __construct($app)
@@ -47,6 +49,8 @@ class ModelBase
 				throw new Exception('The $app argument should point to a valid MVC application.');
 			}
 		}
+
+		$this->reflect();
 	}
 
     /**
@@ -54,16 +58,22 @@ class ModelBase
      *
      * @param int $id ID of the object to retrieve.
      *
+     * @throws Exception There was a query error.
+     *
      * @return ModelBase|bool New instance with the object, or false on failure.
      */
 	public function get($id)
 	{
-		$sql = 'select '.join(', ', $this->getFields()).' from '.$this->getTable().' where id = ?';
+		$sql = 'select `'.join('`, `', $this->fields).'` from `'.$this->table.'` where `id` = ?';
 		$params = [$id];
 
 		$query = $this->app->db->query($sql, $params);
 
 		if (!$query) {
+			if ((int)$this->app->db->errorCode()) {
+				throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
+			}
+
 			return false;
 		}
 
@@ -73,8 +83,7 @@ class ModelBase
 			return false;
 		}
 
-		$class = $this->getClass();
-		$item = new $class($this->app);
+		$item = new $this->class($this->app);
 
 		foreach ($result as $key => $value) {
 			$item->$key = $value;
@@ -89,11 +98,13 @@ class ModelBase
      * @param string $where Condition to use in the `where` clause.
      * @param array $params Parameters, if any in the condition specified.
      *
+     * @throws Exception There was a query error.
+     *
      * @return array|bool Array of instances, or false on failure.
      */
 	public function getAll($where = null, $params = null)
 	{
-		$sql = 'select '.join(', ', $this->getFields()).' from '.$this->getTable();
+		$sql = 'select `'.join('`, `', array_keys($this->fields)).'` from `'.$this->table.'`';
 
 		if (isset($where)) {
 			$sql .= ' where '.$where;
@@ -102,14 +113,17 @@ class ModelBase
 		$query = $this->app->db->query($sql, $params);
 
 		if (!$query) {
+			if ((int)$this->app->db->errorCode()) {
+				throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
+			}
+
 			return false;
 		}
 
 		$items = [];
-		$class = $this->getClass();
 
 		while ($result = $query->fetch(PDO::FETCH_ASSOC)) {
-			$item = new $class($this->app);
+			$item = new $this->class($this->app);
 
 			foreach ($result as $key => $value) {
 				$item->$key = $value;
@@ -123,23 +137,25 @@ class ModelBase
 
 	/**
 	 * Sends an update of the model values to the database.
+	 *
+	 * @throws Exception There was a query error.
      *
      * @return int Value evaluating to true on success, otherwise to false.
 	 */
 	public function save()
 	{
-		$fields = $this->getFields();
+		$fields = $this->fields;
 
-		if ($fields[0] == 'id') {
-			array_shift($fields);
+		if (isset($fields['id'])) {
+			unset($fields['id']);
 		}
 
 		// if ID is set, perform an update
 		if (isset($this->id)) {
-			$sql = 'update '.$this->getTable().' set ';
+			$sql = 'update '.$this->table.' set ';
 			$params = [];
 
-			foreach ($fields as $field) {
+			foreach ($fields as $field => $type) {
 				$sql .= $field.' = ?, ';
 				$params[] = $this->$field;
 			}
@@ -149,10 +165,10 @@ class ModelBase
 		}
 		// if ID is not set, perform an insert
 		else {
-			$sql = 'insert into '.$this->getTable().' ('.join(', ', $fields).') values (';
+			$sql = 'insert into `'.$this->table.'` (`'.join('`, `', array_keys($fields)).'`) values (';
 			$params = [];
 
-			foreach ($fields as $field) {
+			foreach ($fields as $field => $type) {
 				$sql .= '?, ';
 				$params[] = $this->$field;
 			}
@@ -167,36 +183,58 @@ class ModelBase
 			$this->id = (int)$this->app->db->lastInsertId();
 		}
 
+		if ((int)$this->app->db->errorCode()) {
+			throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
+		}
+
 		return $exec;
 	}
 
 	/**
 	 * Creates the table in the database, if doesn't already exist.
+	 *
+	 * @throws Exception There was a query error.
      *
      * @return int Value evaluating to true on success, otherwise to false.
 	 */
 	public function create()
 	{
-		$sql = 'create table if not exists '.$this->getTable()." (\n";
+		$sql = 'create table if not exists `'.$this->table."` (\n";
 
-		$fields = $this->getFields();
 		$hasId = false;
 
-		foreach ($fields as $field) {
-			if ($field == 'id') {
-				$hasId = true;
-				$sql .= ' '.$field." int(11) not null auto_increment,\n";
-			}
-			else if (is_numeric($this->$field)) {
-				$sql .= ' '.$field." int(11) not null,\n";
-			}
-			else {
-				$sql .= ' '.$field." text not null,\n";
+		foreach ($this->fields as $field => $type) {
+			$sql .= ' `'.$field.'` ';
+
+			switch ($type[0]) {
+
+				case 'int': {
+					if ($type[1]['primary_key']) {
+						$sql .= "int(11) not null auto_increment,\n";
+						$hasId = $field;
+					}
+					else {
+						$sql .= "int(11) not null,\n";
+					}
+				} break;
+
+				case 'string': {
+					$sql .= "text not null,\n";
+				} break;
+
+				case 'date': {
+					$sql .= "date not null,\n";
+				} break;
+
+				case 'datetime': {
+					$sql .= "datetime not null,\n";
+				} break;
+
 			}
 		}
 
 		if ($hasId) {
-			$sql .= " primary key (id)\n";
+			$sql .= ' primary key (`'.$hasId."`)\n";
 		}
 		else {
 			$sql = rtrim($sql, ", \n")."\n";
@@ -204,20 +242,25 @@ class ModelBase
 
 		$sql .= ') engine=InnoDB default charset=utf8';
 
-		return $this->app->db->exec($sql, $params);
+		$res = $this->app->db->exec($sql, $params);
+
+		if ((int)$this->app->db->errorCode()) {
+			throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
+		}
+
+		return $res;
 	}
 
 	/**
-	 * Convers the object into an array.
+	 * Converts the object into an array.
 	 *
 	 * @return array Array containing all key-values.
      */
 	public function toArray()
 	{
 		$array = [];
-		$fields = $this->getFields();
 
-		foreach ($fields as $field) {
+		foreach ($this->fields as $field => $type) {
 			$array[$field] = $this->$field;
 		}
 
@@ -225,53 +268,14 @@ class ModelBase
 	}
 
 	/**
-	 * Gets the class name of the inheriting class.
-     *
-     * @return string Name of the inheriting class.
+	 * Gets the table name and fields of the inheriting class.
 	 */
-	private function getClass()
+	private function reflect()
 	{
-		// return cached if available
+		// set class name and derive table name
 
-		if (isset($this->class)) {
-			return $this->class;
-		}
-
-		// whip out the reflection engine
-
-		return $this->class = get_class($this);
-	}
-
-	/**
-	 * Gets the table name of the inheriting class.
-     *
-     * @return string Name of the inheriting class, as a table.
-	 */
-	private function getTable()
-	{
-		// return cached if available
-
-		if (isset($this->table)) {
-			return $this->table;
-		}
-
-		// whip out the reflection engine
-
-		return $this->table = strtolower($this->getClass());
-	}
-
-	/**
-	 * Gets the fields of the inheriting class.
-     *
-     * @return array Array of fields in the inheriting class.
-	 */
-	private function getFields()
-	{
-		// return cached if available
-
-		if (isset($this->fields)) {
-			return $this->fields;
-		}
+		$this->class = get_class($this);
+		$this->table = strtolower($this->class);
 
 		// whip out the reflection engine
 
@@ -283,11 +287,35 @@ class ModelBase
 
 		foreach ($properties as $property) {
 			if ($property->class != 'ModelBase') {
-				$this->fields[] = $property->name;
+				if ($property->name == 'id') {
+					$this->fields[$property->name] = ['int', ['primary_key' => true]];
+				}
+				else {
+					$this->fields[$property->name] = ['string'];
+				}
 			}
 		}
+	}
 
+	/**
+	 * Gets the fields and type information for the derived class.
+	 *
+	 * @return array Array of field name and type information.
+     */
+	public function getFields()
+	{
 		return $this->fields;
+	}
+
+	/**
+	 * Sets the field of the table to a specific type.
+	 *
+	 * @param string $field Name of the field.
+	 * @param array $type Type information for the field.
+     */
+	public function setField($field, $type)
+	{
+		$this->fields[$field] = $type;
 	}
 
 }

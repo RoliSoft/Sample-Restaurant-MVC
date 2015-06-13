@@ -45,7 +45,7 @@ class Admin extends ControllerBase
 	public function foods()
 	{
 		$crud = new CrudHelper($this, 'Food', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
-		$crud->make();
+		$crud->run();
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Admin extends ControllerBase
 	public function menu()
 	{
 		$crud = new CrudHelper($this, 'Menu', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
-		$crud->make();
+		$crud->run();
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Admin extends ControllerBase
 	public function passes()
 	{
 		$crud = new CrudHelper($this, 'Pass', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
-		$crud->make();
+		$crud->run();
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Admin extends ControllerBase
 	public function orders()
 	{
 		$crud = new CrudHelper($this, 'Order', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
-		$crud->make();
+		$crud->run();
 	}
 
 	/**
@@ -81,7 +81,7 @@ class Admin extends ControllerBase
 	public function users()
 	{
 		$crud = new CrudHelper($this, 'User', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
-		$crud->make();
+		$crud->run();
 	}
 
 }
