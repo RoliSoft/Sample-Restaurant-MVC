@@ -54,6 +54,11 @@ td small {
 	text-align: right;
 }
 
+.admin-form-new-header {
+	margin-top: 0px;
+	margin-bottom: 36px;
+}
+
 .left {
 	float: left;
 }

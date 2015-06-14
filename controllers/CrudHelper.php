@@ -135,13 +135,13 @@ class CrudHelper
 
 		            case 'edit': {
 
-			            $this->editRecord();
+			            $this->editRecord($this->app->query['record']);
 
 		            } break;
 
 		            case 'delete': {
 
-			            $this->deleteRecord();
+			            $this->deleteRecord($this->app->query['record']);
 
 		            } break;
 
@@ -223,7 +223,8 @@ class CrudHelper
 			$this->app->view->make($this->headerView, $this->headerArgs);
 		}
 
-		$this->app->view->make('crud/create', ['fields' => $this->fields]);
+		$this->generateCsrfToken('cru');
+		$this->app->view->make('crud/create', ['fields' => $this->fields, 'class' => $this->type]);
 
 		if (isset($this->footerView)) {
 			$this->app->view->make($this->footerView, $this->footerArgs);
@@ -232,13 +233,16 @@ class CrudHelper
 
 	/**
 	 * Generates the record edition form.
+	 *
+	 * @param int $id ID of the record.
 	 */
-	private function editRecord()
+	private function editRecord($id)
 	{
 		if (isset($this->headerView)) {
 			$this->app->view->make($this->headerView, $this->headerArgs);
 		}
 
+		$this->generateCsrfToken('upd');
 		$this->app->view->make('crud/create', ['fields' => $this->fields]);
 
 		if (isset($this->footerView)) {
@@ -248,18 +252,79 @@ class CrudHelper
 
 	/**
 	 * Generates the record deletion confirmation.
+	 *
+	 * @param int $id ID of the record.
 	 */
-	private function deleteRecord()
+	private function deleteRecord($id)
 	{
+		$table = new $this->type($this->app);
+		$record = $table->get($id);
+
 		if (isset($this->headerView)) {
 			$this->app->view->make($this->headerView, $this->headerArgs);
 		}
 
-		$this->app->view->make('crud/delete');
+		$this->generateCsrfToken('del');
+		$this->app->view->make('crud/delete', ['id' => (int)$id, 'item' => (string)$record, 'class' => $this->type]);
 
 		if (isset($this->footerView)) {
 			$this->app->view->make($this->footerView, $this->footerArgs);
 		}
+	}
+
+	/**
+	 * Generates a CSRF token and inserts it into the session variable.
+	 *
+	 * @param string $name Name of the token.
+	 */
+	private static function generateCsrfToken($name)
+	{
+		if (empty($_SESSION[$name.'_csrf'])) {
+			$_SESSION[$name.'_csrf'] = self::base64Encode(openssl_random_pseudo_bytes(19));
+		}
+	}
+
+	/**
+	 * Verifies whether the CSRF token is valid.
+	 *
+	 * @param string $name Name of the token.
+	 * @param string $value Value of the token, or $_POST[token] if null.
+	 *
+	 * @return bool Value indicating whether the sent token is valid.
+	 */
+	private static function verifyCsrfToken($name, $value = null)
+	{
+		self::generateCsrfToken($name);
+
+		if (!isset($value)) {
+			$value = $_POST['token'];
+		}
+
+		return $_SESSION[$name.'_csrf'] == $value;
+	}
+
+	/**
+	 * Encodes the input to Base64/URL.
+	 *
+	 * @param string $str String to encode.
+	 *
+	 * @return string Encoded string.
+	 */
+	public static function base64Encode($str)
+	{
+		return rtrim(strtr(base64_encode($str), '+/=', '-_,'), ',');
+	}
+
+	/**
+	 * Decodes the input from Base64/URL.
+	 *
+	 * @param string $str String to decode.
+	 *
+	 * @return string Decoded string.
+	 */
+	public static function base64Decode($str)
+	{
+		return base64_decode(strtr($str, '-_,', '+/='));
 	}
 
 }

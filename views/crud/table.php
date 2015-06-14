@@ -51,7 +51,7 @@ foreach ($fields as $field => $type):
 		$value = $record->$field;
 	}
 ?>
-						<td><?=isset($conf['prefix'])?'<small>'.$conf['prefix'].'</small> ':''?><?=$value?><?=isset($conf['suffix'])?' <small>'.$conf['suffix'].'</small>':''?></td>
+						<td><?=isset($conf['prefix'])?'<small>'.$conf['prefix'].'</small> ':''?><?=htmlspecialchars($value)?><?=isset($conf['suffix'])?' <small>'.$conf['suffix'].'</small>':''?></td>
 <? endforeach; // ($fields as $field => $type) ?>
 						<td class="admin-table-btns">
 							<a role="button" class="btn btn-xs btn-info" href="?action=edit&record=<?=$id?>"><span class="fa fa-pencil"></span> Edit</a>
