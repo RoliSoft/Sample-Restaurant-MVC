@@ -2,7 +2,7 @@
 /**
  * Represents the base of a model.
  */
-class ModelBase
+abstract class ModelBase
 {
 
 	/**
@@ -64,7 +64,7 @@ class ModelBase
      */
 	public function get($id)
 	{
-		$sql = 'select `'.join('`, `', $this->fields).'` from `'.$this->table.'` where `id` = ?';
+		$sql = 'select `'.join('`, `', array_keys($this->fields)).'` from `'.$this->table.'` where `id` = ?';
 		$params = [$id];
 
 		$query = $this->app->db->query($sql, $params);
@@ -77,19 +77,14 @@ class ModelBase
 			return false;
 		}
 
-		$result = $query->fetch(PDO::FETCH_ASSOC);
+		$query->setFetchMode(PDO::FETCH_CLASS, $this->class, [$this->app]);
+		$result = $query->fetch();
 
 		if (!$result) {
 			return false;
 		}
 
-		$item = new $this->class($this->app);
-
-		foreach ($result as $key => $value) {
-			$item->$key = $value;
-		}
-
-		return $item;
+		return $result;
 	}
 
     /**
@@ -120,19 +115,14 @@ class ModelBase
 			return false;
 		}
 
-		$items = [];
+		$query->setFetchMode(PDO::FETCH_CLASS, $this->class, [$this->app]);
+		$result = $query->fetchAll();
 
-		while ($result = $query->fetch(PDO::FETCH_ASSOC)) {
-			$item = new $this->class($this->app);
-
-			foreach ($result as $key => $value) {
-				$item->$key = $value;
-			}
-
-			$items[] = $item;
+		if (!$result) {
+			return false;
 		}
 
-		return $items;
+		return $result;
 	}
 
 	/**
@@ -249,6 +239,76 @@ class ModelBase
 		}
 
 		return $res;
+	}
+
+	/**
+	 * Gets the number of records in the database, satisfying a condition when specified.
+	 *
+	 * @param string $where Condition to use in the `where` clause.
+	 * @param array $params Parameters, if any in the condition specified.
+	 *
+	 * @throws Exception There was a query error.
+	 *
+	 * @return int|bool Number of records, or false on failure.
+	 */
+	public function count($where = null, $params = null)
+	{
+		$sql = 'select count(*) from `'.$this->table.'`';
+
+		if (isset($where)) {
+			$sql .= ' where '.$where;
+		}
+
+		$query = $this->app->db->query($sql, $params);
+
+		if (!$query) {
+			if ((int)$this->app->db->errorCode()) {
+				throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
+			}
+
+			return false;
+		}
+
+		$query->setFetchMode(PDO::FETCH_ASSOC);
+		$result = $query->fetch();
+
+		if (!$result || !isset($result['count(*)'])) {
+			return false;
+		}
+
+		return (int)$result['count(*)'];
+	}
+
+	/**
+	 * Gets the rough number of records in the database.
+	 *
+	 * @throws Exception There was a query error.
+	 *
+	 * @return int|bool Number of records, or false on failure.
+	 */
+	public function fastCount()
+	{
+		$sql = 'select `table_rows` from `information_schema`.`tables` where `table_schema` = database() and `table_name` = ?';
+		$params = [$this->table];
+
+		$query = $this->app->db->query($sql, $params);
+
+		if (!$query) {
+			if ((int)$this->app->db->errorCode()) {
+				throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
+			}
+
+			return false;
+		}
+
+		$query->setFetchMode(PDO::FETCH_ASSOC);
+		$result = $query->fetch();
+
+		if (!$result || !isset($result['table_rows'])) {
+			return false;
+		}
+
+		return (int)$result['table_rows'];
 	}
 
 	/**

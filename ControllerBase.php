@@ -2,7 +2,7 @@
 /**
  * Represents the base of a controller.
  */
-class ControllerBase
+abstract class ControllerBase
 {
 
 	/**

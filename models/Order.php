@@ -55,7 +55,7 @@ class Order extends ModelBase
 /**
  * Represents a gateway.
  */
-abstract class Gateways //extends SplEnum
+abstract class Gateways extends Enum
 {
 
 	/**

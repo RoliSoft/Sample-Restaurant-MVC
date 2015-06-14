@@ -102,7 +102,6 @@ class Database extends PDO
 
 		if (isset($params)) {
 			$result = parent::prepare($sql);
-			$result->setFetchMode(PDO::FETCH_ASSOC);
 			$result->execute($params);
 		}
 		else {

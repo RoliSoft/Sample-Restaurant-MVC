@@ -48,6 +48,12 @@ td small {
 	font-size: 83%;
 }
 
+.admin-table-btns {
+	width: 1%;
+	white-space: nowrap;
+	text-align: right;
+}
+
 .left {
 	float: left;
 }
