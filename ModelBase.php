@@ -53,6 +53,27 @@ abstract class ModelBase
 		$this->reflect();
 	}
 
+	/**
+	 * Gets the name of the primary key.
+	 *
+	 * @return string|null Name of the key, or null if none is set as primary.
+	 */
+	public function getPKName()
+	{
+		if (isset($this->fields['id']) && $this->fields['id'][1]['primary_key']) {
+			return 'id';
+		}
+		else {
+			foreach ($this->fields as $field => $type) {
+				if ($type[1]['primary_key']) {
+					return $field;
+				}
+			}
+		}
+
+		return null;
+	}
+
     /**
      * Gets the item with the specified ID.
      *

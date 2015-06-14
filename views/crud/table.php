@@ -40,7 +40,12 @@ foreach ($fields as $field => $type):
 		$value = $conf['enum']::getName($record->$field);
 	}
 	else if ($conf['foreign_key']) {
-		$value = '#'.$record->$field;
+		if (isset($foreigns[$field][$record->$field])) {
+			$value = (string)$foreigns[$field][$record->$field];
+		}
+		else {
+			$value = '#'.$record->$field;
+		}
 	}
 	else {
 		$value = $record->$field;

@@ -141,11 +141,46 @@ class CrudHelper
 		    $records = [];
 	    }
 
+	    $foreign_cols = [];
+
+	    foreach ($this->fields as $field => $type) {
+		    if ($type[1]['foreign_key']) {
+				$foreign_cols[$field] = $type[1]['foreign_key'];
+		    }
+	    }
+
+	    $foreigns = [];
+
+	    if (!empty($foreign_cols)) {
+		    $foreign_ids = [];
+
+		    foreach ($records as $record) {
+				foreach ($foreign_cols as $key => $type) {
+					$foreign_ids[$key][(int)$record->$key] = (int)$record->$key;
+				}
+		    }
+
+		    foreach ($foreign_ids as $col => $ids) {
+			    $class = $foreign_cols[$col];
+			    $instance = new $class($this->app);
+			    $idcol = $instance->getPKName();
+			    $result = $instance->getAll('`'.$idcol.'` in ('.join(',', $ids).')');
+
+				$foreigns[$col] = [];
+
+			    foreach ($result as $record) {
+				    $foreigns[$col][$record->$idcol] = $record;
+			    }
+
+			    unset($result);
+		    }
+	    }
+
 	    if (isset($this->headerView)) {
 		    $this->app->view->make($this->headerView, $this->headerArgs);
 	    }
 
-	    $this->app->view->make('crud/table', ['fields' => $this->fields, 'records' => $records]);
+	    $this->app->view->make('crud/table', ['fields' => $this->fields, 'records' => $records, 'foreigns' => $foreigns]);
 
 	    if (isset($this->footerView)) {
 		    $this->app->view->make($this->footerView, $this->footerArgs);

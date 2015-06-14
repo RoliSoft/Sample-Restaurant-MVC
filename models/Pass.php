@@ -37,4 +37,14 @@ class Pass extends ModelBase
 		parent::setField('price', ['int', ['suffix' => 'RON']]);
 	}
 
+	/**
+	 * Returns the textual representation of this class.
+	 *
+	 * @return string Textual representation.
+	 */
+	public function __toString()
+	{
+		return $this->name;
+	}
+
 }

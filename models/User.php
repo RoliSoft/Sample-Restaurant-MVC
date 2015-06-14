@@ -70,6 +70,16 @@ class User extends ModelBase
 		return password_verify($pass, '$2y$10$'.$this->password);
 	}
 
+	/**
+	 * Returns the textual representation of this class.
+	 *
+	 * @return string Textual representation.
+	 */
+	public function __toString()
+	{
+		return $this->name;
+	}
+
 }
 
 /**

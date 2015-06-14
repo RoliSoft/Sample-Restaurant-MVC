@@ -76,6 +76,16 @@ class Food extends ModelBase
 		return number_format($this->rate_sum / $this->rate_cnt, 2);
 	}
 
+	/**
+	 * Returns the textual representation of this class.
+	 *
+	 * @return string Textual representation.
+	 */
+	public function __toString()
+	{
+		return $this->name;
+	}
+
 }
 
 /**
