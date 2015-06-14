@@ -34,7 +34,7 @@ class Admin extends ControllerBase
 	 */
 	public function index()
 	{
-		$this->app->view->make('headerAdmin', UserMgmt::getHeaderVariables());
+		$this->app->view->make('admin/header', UserMgmt::getHeaderVariables());
 		$this->app->view->make('freetext', ['content' => '<p>Hi admin!</p>']);
 		$this->app->view->make('footer');
 	}
@@ -44,7 +44,7 @@ class Admin extends ControllerBase
 	 */
 	public function foods()
 	{
-		$crud = new CrudHelper($this, 'Food', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud = new CrudHelper($this, 'Food', 'admin/header', UserMgmt::getHeaderVariables(), 'footer', null);
 		$crud->run();
 	}
 
@@ -53,7 +53,7 @@ class Admin extends ControllerBase
 	 */
 	public function menu()
 	{
-		$crud = new CrudHelper($this, 'Menu', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud = new CrudHelper($this, 'Menu', 'admin/header', UserMgmt::getHeaderVariables(), 'footer', null);
 		$crud->run();
 	}
 
@@ -62,7 +62,7 @@ class Admin extends ControllerBase
 	 */
 	public function passes()
 	{
-		$crud = new CrudHelper($this, 'Pass', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud = new CrudHelper($this, 'Pass', 'admin/header', UserMgmt::getHeaderVariables(), 'footer', null);
 		$crud->run();
 	}
 
@@ -71,7 +71,7 @@ class Admin extends ControllerBase
 	 */
 	public function orders()
 	{
-		$crud = new CrudHelper($this, 'Order', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud = new CrudHelper($this, 'Order', 'admin/header', UserMgmt::getHeaderVariables(), 'footer', null);
 		$crud->run();
 	}
 
@@ -80,7 +80,7 @@ class Admin extends ControllerBase
 	 */
 	public function users()
 	{
-		$crud = new CrudHelper($this, 'User', 'headerAdmin', UserMgmt::getHeaderVariables(), 'footer', null);
+		$crud = new CrudHelper($this, 'User', 'admin/header', UserMgmt::getHeaderVariables(), 'footer', null);
 		$crud->run();
 	}
 

@@ -118,7 +118,34 @@ class CrudHelper
 
             case GET: {
 
-	            $this->listRecords();
+	            switch ($this->app->query['action']) {
+
+		            default:
+		            case 'list': {
+
+		                $this->listRecords();
+
+	                } break;
+
+		            case 'create': {
+
+			            $this->createRecord();
+
+		            } break;
+
+		            case 'edit': {
+
+			            $this->editRecord();
+
+		            } break;
+
+		            case 'delete': {
+
+			            $this->deleteRecord();
+
+		            } break;
+
+	            }
 
             } break;
 
@@ -186,5 +213,53 @@ class CrudHelper
 		    $this->app->view->make($this->footerView, $this->footerArgs);
 	    }
     }
+
+	/**
+	 * Generates the record creation form.
+	 */
+	private function createRecord()
+	{
+		if (isset($this->headerView)) {
+			$this->app->view->make($this->headerView, $this->headerArgs);
+		}
+
+		$this->app->view->make('crud/create', ['fields' => $this->fields]);
+
+		if (isset($this->footerView)) {
+			$this->app->view->make($this->footerView, $this->footerArgs);
+		}
+	}
+
+	/**
+	 * Generates the record edition form.
+	 */
+	private function editRecord()
+	{
+		if (isset($this->headerView)) {
+			$this->app->view->make($this->headerView, $this->headerArgs);
+		}
+
+		$this->app->view->make('crud/create', ['fields' => $this->fields]);
+
+		if (isset($this->footerView)) {
+			$this->app->view->make($this->footerView, $this->footerArgs);
+		}
+	}
+
+	/**
+	 * Generates the record deletion confirmation.
+	 */
+	private function deleteRecord()
+	{
+		if (isset($this->headerView)) {
+			$this->app->view->make($this->headerView, $this->headerArgs);
+		}
+
+		$this->app->view->make('crud/delete');
+
+		if (isset($this->footerView)) {
+			$this->app->view->make($this->footerView, $this->footerArgs);
+		}
+	}
 
 }

@@ -6,6 +6,16 @@ class View
 {
 
 	/**
+	 * Indicates whether the header was sent up until this point.
+	 */
+	private $headerSent;
+
+	/**
+	 * Indicates whether the footer was sent up until this point.
+	 */
+	private $footerSent;
+
+	/**
 	 * Renders the specified template.
 	 *
 	 * @param string $path Name of the template.
@@ -19,6 +29,24 @@ class View
 
 		if (!file_exists($file)) {
 			throw new Exception('The $path argument points to a non-existent template: "'.$path.'".');
+		}
+
+		if (strpos($path, 'header') !== false) {
+			if (!$this->headerSent) {
+				$this->headerSent = true;
+			}
+			else {
+				return;
+			}
+		}
+
+		if (strpos($path, 'footer') !== false) {
+			if (!$this->footerSent) {
+				$this->footerSent = true;
+			}
+			else {
+				return;
+			}
 		}
 
 		if (!empty($vars)) {
