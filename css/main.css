@@ -107,6 +107,30 @@ strong.food-title {
 	}
 }
 
+.star-green .fa {
+	color: #60a917;
+}
+
+.star-blue .fa {
+	color: #2784a7;
+}
+
+.star-red .fa {
+	color: #e51400;
+}
+
+.star-gray .fa {
+	color: #647687;
+}
+
+.rate-na {
+	color: #647687;
+}
+
+.rate-star {
+	cursor: pointer;
+}
+
 .left {
 	float: left;
 }

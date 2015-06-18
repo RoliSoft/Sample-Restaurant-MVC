@@ -273,6 +273,29 @@ class Canteen extends ControllerBase
 	 */
 	public function doRate()
 	{
+		if (!isset($_POST['record']) || !isset($_POST['rating'])) {
+			print json_encode(['ok' => false, 'err' => 'Missing required field.']);
+			return;
+		}
+
+		if ($_POST['rating'] < 0 || $_POST['rating'] > 5) {
+			print json_encode(['ok' => false, 'err' => 'Rating out of range.']);
+			return;
+		}
+
+		try {
+			$food = new Food($this);
+			$food = $food->get($_POST['record']);
+
+			$food->addRating((int)$_POST['rating']);
+			$food->save();
+		}
+		catch (Exception $ex) {
+			print json_encode(['ok' => false, 'err' => 'Exception occurred: '.$ex->getMessage()]);
+			return;
+		}
+
+		print json_encode(['ok' => true]);
 	}
 
 	/**

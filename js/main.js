@@ -48,4 +48,31 @@ $(document).ready(function () {
 		});
 	}
 
+	if ($('.rate-star').length) {
+		$('.rate-star').click(function() {
+
+			var elm = $(this);
+			$(this).parent().animate({'opacity': 0.5}, 500, function () {
+
+				$.post('rate', {
+					'record': elm.data('food-id'),
+					'rating': elm.data('rating')
+				}, function(data) {
+
+					var res = $.parseJSON(data);
+
+					if (res.ok) {
+						elm.parent().animate({'opacity': 1}, 500);
+					}
+					else {
+						alert('Rating failed: ' + res.err);
+					}
+
+				});
+
+			});
+
+		});
+	}
+
 });
