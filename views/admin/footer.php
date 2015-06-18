@@ -3,7 +3,7 @@
 			<hr>
 
 			<footer>
-				<p>&copy;<?=date('Y')?> RoliSoft &ndash; Developed for a class asignment.</p>
+				<p>Developed for a class asignment.<br />&copy;<?=date('Y')?> RoliSoft &middot; <?=sprintf('%.3f', microtime(true) - $this->app->start)?>s<? $qc = $this->app->db->count(); if ($qc != 0) { print ' '.sprintf('%d', $qc).'q'; } ?></p>
 			</footer>
 		</div>
 

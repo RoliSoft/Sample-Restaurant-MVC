@@ -58,16 +58,22 @@ class MVC
 	public $query;
 
 	/**
+	 * Timestamp of the class construction.
+	 */
+	public $start;
+
+	/**
 	 * Initializes the class.
 	 */
 	function __construct()
 	{
+		$this->start  = microtime(true);
 		$this->routes = [
 			GET  => [ DIRECT => [], PATTERN => [] ],
 			POST => [ DIRECT => [], PATTERN => [] ],
 			SPEC => []
 		];
-		$this->view = new View();
+		$this->view  = new View($this);
 		$this->cache = new Cache();
 
 		session_name('sid');

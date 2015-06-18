@@ -354,7 +354,7 @@ abstract class ModelBase
 		if ((int)$this->app->db->errorCode()) {
 			throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
 		}
-		
+
 		return $res;
 	}
 

@@ -83,7 +83,7 @@ class Food extends ModelBase
 	 */
 	public function __toString()
 	{
-		return $this->name;
+		return $this->name.' ['.FoodTypes::getName($this->type).']';
 	}
 
 }

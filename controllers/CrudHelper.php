@@ -355,7 +355,7 @@ class CrudHelper
 			$this->app->view->redirect('?');
 		}
 		else {
-			$this->app->view->redirect('?#item-'.(int)$_POST['record']);
+			$this->app->view->redirect('?#item-'.(int)$_GET['record']);
 		}
 	}
 

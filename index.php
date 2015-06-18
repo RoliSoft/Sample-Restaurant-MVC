@@ -4,7 +4,7 @@ include 'autoloader.php';
 
 $app = new MVC();
 $app->db = new Database('.config.php');
-$app->stripPath = '/webproj';
+$app->stripPath = '/canteen-mvc';
 
 $app->route(GET,  '',			['Canteen', 'index']);
 $app->route(GET,  'index',		['Canteen', 'index']);

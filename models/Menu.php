@@ -32,4 +32,14 @@ class Menu extends ModelBase
 		parent::setField('food_id', ['int', ['foreign_key' => 'Food']]);
 	}
 
+	/**
+	 * Returns the textual representation of this class.
+	 *
+	 * @return string Textual representation.
+	 */
+	public function __toString()
+	{
+		return $this->date;
+	}
+
 }
