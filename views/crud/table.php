@@ -16,7 +16,7 @@ foreach ($fields as $field => $type):
 						<th><?=$conf['name']?></th>
 <? endforeach; // ($fields as $field => $type) ?>
 						<th class="admin-table-btns">
-							<a role="button" class="btn btn-xs btn-success" href="?action=create"><span class="fa fa-plus-circle"></span> Create</a>
+							<a role="button" class="btn btn-xs btn-success" href="?action=manage"><span class="fa fa-plus-circle"></span> Create</a>
 						</th>
 					</tr>
 					</thead>
@@ -54,7 +54,7 @@ foreach ($fields as $field => $type):
 						<td><?=isset($conf['prefix'])?'<small>'.$conf['prefix'].'</small> ':''?><?=htmlspecialchars($value)?><?=isset($conf['suffix'])?' <small>'.$conf['suffix'].'</small>':''?></td>
 <?  endforeach; // ($fields as $field => $type) ?>
 						<td class="admin-table-btns">
-							<a role="button" class="btn btn-xs btn-info" href="?action=edit&record=<?=$id?>"><span class="fa fa-pencil"></span> Edit</a>
+							<a role="button" class="btn btn-xs btn-info" href="?action=manage&record=<?=$id?>"><span class="fa fa-pencil"></span> Edit</a>
 							<a role="button" class="btn btn-xs btn-primary" href="?action=delete&record=<?=$id?>"><span class="fa fa-trash"></span> Delete</a>
 						</td>
 					</tr>

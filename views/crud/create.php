@@ -2,16 +2,25 @@
 		<div class="jumbotron">
 			<div class="container">
 				<div class="page-header admin-form-new-header">
-					<h2><i class="fa fa-plus-circle breathe-shadow"></i> Add new <?=$class?></h2>
+<? if ($record): ?>
+					<h2><i class="fa fa-pencil breathe-shadow"></i> Edit <?=htmlspecialchars((string)$record)?></h2>
+<? else: // record ?>
+					<h2><i class="fa fa-plus-circle breathe-shadow"></i> Create <?=$class?></h2>
+<? endif; // record?>
 				</div>
-				<form class="form-horizontal" method="post" action="?action=create">
+				<form class="form-horizontal" method="post" action="?action=manage">
 <?
 foreach ($fields as $field => $type):
 
 	$conf = $type[1];
 
 	if ($conf['primary_key']) {
-		continue;
+		if ($record) {
+			$conf['readonly'] = true;
+		}
+		else {
+			continue;
+		}
 	}
 
 	unset($values);
@@ -34,7 +43,7 @@ foreach ($fields as $field => $type):
 	if ($conf['readonly']) {
 		$attrs = ' readonly';
 
-		if ($type[0] == 'int') {
+		if ($type[0] == 'int' && !$record) {
 			$attrs .= ' value="0"';
 		}
 	}
@@ -46,6 +55,10 @@ foreach ($fields as $field => $type):
 	else if ($type[0] == 'datetime') {
 		$classes .= ' datetimepicker';
 		$conf['prefix'] = '<i class="fa fa-clock-o"></i>';
+	}
+
+	if ($record && !$values) {
+		$attrs .= ' value="'.htmlspecialchars($record->$field).'"';
 	}
 ?>
 					<div class="form-group">
@@ -64,7 +77,7 @@ foreach ($fields as $field => $type):
 <?          if (isset($values)): ?>
 								<select class="form-control<?=$classes?>" name="<?=$field?>"<?=$attrs?>>
 <?              foreach ($values as $key => $value): ?>
-									<option value="<?=$key?>"><?=$value?></option>
+									<option value="<?=$key?>"<?=($record && $record->$field == $key ? ' selected' : '')?>><?=$value?></option>
 <?              endforeach; // $values as $key => $value ?>
 								</select>
 <?          else: // enum or foreign ?>

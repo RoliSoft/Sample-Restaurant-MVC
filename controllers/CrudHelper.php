@@ -127,15 +127,9 @@ class CrudHelper
 
 	                } break;
 
-		            case 'create': {
+		            case 'manage': {
 
-			            $this->createRecord();
-
-		            } break;
-
-		            case 'edit': {
-
-			            $this->editRecord($this->app->query['record']);
+			            $this->manageRecord($this->app->query['record']);
 
 		            } break;
 
@@ -153,15 +147,9 @@ class CrudHelper
 
 	            switch ($this->app->query['action']) {
 
-		            case 'create': {
+		            case 'manage': {
 
-			            $this->doCreateRecord();
-
-		            } break;
-
-		            case 'edit': {
-
-			            $this->doEditRecord();
+			            $this->doManageRecord();
 
 		            } break;
 
@@ -236,10 +224,25 @@ class CrudHelper
     }
 
 	/**
-	 * Generates the record creation form.
+	 * Generates the record creation/update form.
+	 *
+	 * @param int $id Optional ID of the record when editing.
+	 *
+	 * @throws Exception Failed to fetch item when editing.
 	 */
-	private function createRecord()
+	private function manageRecord($id = null)
 	{
+		// fetch item, if editing
+
+		if (isset($id)) {
+			$table = new $this->type($this->app);
+			$record = $table->get($id);
+
+			if (!$record) {
+				throw new Exception('Failed to fetch item '.htmlspecialchars($id).' for editing.');
+			}
+		}
+
 		// check if type has foreign keys defined
 
 		foreach ($this->fields as $field => $type) {
@@ -258,8 +261,8 @@ class CrudHelper
 				$result = $instance->getAll();
 				$foreigns[$class] = [];
 
-				foreach ($result as $record) {
-					$foreigns[$class][$record->getId()] = (string)$record;
+				foreach ($result as $item) {
+					$foreigns[$class][$item->getId()] = (string)$item;
 				}
 
 				unset($result);
@@ -273,7 +276,7 @@ class CrudHelper
 		}
 
 		$this->generateCsrfToken('cru');
-		$this->app->view->make('crud/create', ['fields' => $this->fields, 'class' => $this->type, 'foreigns' => $foreigns]);
+		$this->app->view->make('crud/create', ['fields' => $this->fields, 'class' => $this->type, 'foreigns' => $foreigns, 'record' => $record]);
 
 		if (isset($this->footerView)) {
 			$this->app->view->make($this->footerView, $this->footerArgs);
@@ -281,9 +284,9 @@ class CrudHelper
 	}
 
 	/**
-	 * Processes the record creation form and executes it.
+	 * Processes the record creation/update form and executes it.
 	 */
-	private function doCreateRecord()
+	private function doManageRecord()
 	{
 		if (!$this->verifyCsrfToken('cru')) {
 			throw new Exception('Security error: CSRF token validation failed.');
@@ -311,25 +314,6 @@ class CrudHelper
 	}
 
 	/**
-	 * Generates the record edition form.
-	 *
-	 * @param int $id ID of the record.
-	 */
-	private function editRecord($id)
-	{
-		if (isset($this->headerView)) {
-			$this->app->view->make($this->headerView, $this->headerArgs);
-		}
-
-		$this->generateCsrfToken('upd');
-		$this->app->view->make('crud/create', ['fields' => $this->fields]);
-
-		if (isset($this->footerView)) {
-			$this->app->view->make($this->footerView, $this->footerArgs);
-		}
-	}
-
-	/**
 	 * Generates the record deletion confirmation.
 	 *
 	 * @param int $id ID of the record.
@@ -348,6 +332,30 @@ class CrudHelper
 
 		if (isset($this->footerView)) {
 			$this->app->view->make($this->footerView, $this->footerArgs);
+		}
+	}
+
+	/**
+	 * Processes the record deletion form and executes it.
+	 */
+	private function doDeleteRecord()
+	{
+		if (!$this->verifyCsrfToken('del')) {
+			throw new Exception('Security error: CSRF token validation failed.');
+		}
+
+		if ($_POST['delete'] == 'yes') {
+			$table = new $this->type($this->app);
+			$table->setId($_GET['record']);
+
+			if (!$table->delete()) {
+				throw new Exception('Server error occurred while deleting record.');
+			}
+
+			$this->app->view->redirect('?');
+		}
+		else {
+			$this->app->view->redirect('?#item-'.(int)$_POST['record']);
 		}
 	}
 

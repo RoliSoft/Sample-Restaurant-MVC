@@ -81,18 +81,32 @@ abstract class ModelBase
 	 */
 	public function getId()
 	{
-		if (isset($this->fields['id']) && $this->fields['id'][1]['primary_key']) {
-			return $this->id;
-		}
-		else {
-			foreach ($this->fields as $field => $type) {
-				if ($type[1]['primary_key']) {
-					return $this->$field;
-				}
-			}
+		$idcol = $this->getPKName();
+
+		if ($idcol != null) {
+			return $this->$idcol;
 		}
 
 		return null;
+	}
+
+	/**
+	 * Sets the ID of the item.
+	 *
+	 * @param int $id New ID to set.
+	 *
+	 * @return bool Value indicating whether the ID was set.
+	 */
+	public function setId($id)
+	{
+		$idcol = $this->getPKName();
+
+		if ($idcol != null) {
+			$this->$idcol = $id;
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -217,7 +231,7 @@ abstract class ModelBase
 		}
 
 		// if ID is set, perform an update
-		if (isset($this->id)) {
+		if (isset($this->$idcol)) {
 			$sql = 'update `'.$this->table.'` set ';
 			$params = [];
 
@@ -245,8 +259,8 @@ abstract class ModelBase
 		$exec = $this->app->db->exec($sql, $params);
 
 		// set the ID of the insert as the ID of this object
-		if ($exec && !isset($this->id)) {
-			$this->id = (int)$this->app->db->lastInsertId();
+		if ($exec && !isset($this->$idcol)) {
+			$this->setId((int)$this->app->db->lastInsertId());
 		}
 
 		if ((int)$this->app->db->errorCode()) {
@@ -314,6 +328,33 @@ abstract class ModelBase
 			throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
 		}
 
+		return $res;
+	}
+
+	/**
+	 * Deletes the item with the specified ID.
+	 *
+	 * @param int $id Optional ID of the object to delete.
+	 *
+	 * @throws Exception There was a query error.
+	 *
+	 * @return int Value evaluating to true on success, otherwise to false.
+	 */
+	public function delete($id = null)
+	{
+		if (!isset($id)) {
+			$id = $this->getId();
+		}
+
+		$sql = 'delete from `'.$this->table.'` where `'.$this->getPKName().'` = ? limit 1';
+		$params = [$id];
+
+		$res = $this->app->db->exec($sql, $params);
+
+		if ((int)$this->app->db->errorCode()) {
+			throw new Exception('Query error: '.join(' / ', $this->app->db->errorInfo()));
+		}
+		
 		return $res;
 	}
 
@@ -452,6 +493,16 @@ abstract class ModelBase
 	public function setField($field, $type)
 	{
 		$this->fields[$field] = $type;
+	}
+
+	/**
+	 * Returns the textual representation of this class.
+	 *
+	 * @return string Textual representation.
+	 */
+	public function __toString()
+	{
+		return $this->class.' '.$this->getId();
 	}
 
 }
