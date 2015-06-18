@@ -10,9 +10,9 @@ $app->route(GET,  '',			['Canteen', 'index']);
 $app->route(GET,  'index',		['Canteen', 'index']);
 $app->route(GET,  'today',		['Canteen', 'today']);
 $app->route(GET,  'week',		['Canteen', 'week']);
-$app->route(GET,  [':(monday|tuesday|wednesday|thursday|saturday|friday)'], ['Canteen', 'day']);
-$app->route(GET,  ['food-', ':([\w-]+)'], ['Canteen', 'food']);
+$app->route(GET,  'passes',		['Canteen', 'passes']);
 
+$app->route(POST, 'passes',		['Canteen', 'doPasses']);
 $app->route(POST, 'rate',		['Canteen', 'doRate']);
 
 $app->route(GET,  'login',		['UserMgmt', 'login']);

@@ -33,11 +33,14 @@
 					<a class="navbar-brand" href="index"><i class="fa fa-cutlery"></i>&nbsp; Sapientia Canteen</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
-<? if ($signedIn && $isAdmin): ?>
 					<ul class="nav navbar-nav">
+<? if ($signedIn && $isAdmin): ?>
 						<li><a href="admin"><i class="fa fa-cogs"></i> Administration</a></li>
-					</ul>
 <? endif; ?>
+						<li><a href="today"><i class="fa fa-calendar-o"></i> Today</a></li>
+						<li><a href="week"><i class="fa fa-calendar"></i> Week</a></li>
+						<li><a href="passes"><i class="fa fa-ticket"></i> Passes</a></li>
+					</ul>
 					<ul class="nav navbar-nav navbar-right">
 <? if ($signedIn): ?>
 						<li class="dropdown">

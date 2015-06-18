@@ -63,6 +63,30 @@ td small {
 	background-color: #e9e9e9 !important;
 }
 
+.page-header.no-margin {
+	margin-top: 0px !important;
+}
+
+.food-desc {
+	text-align: right;
+}
+
+.well .food-title {
+	margin-top: 0px;
+}
+
+.well .food-desc {
+	margin-bottom: 0px;
+}
+
+h3, .h3 {
+	font-size: 20px;
+}
+
+.no-margin > h4 {
+	margin-bottom: 3px;
+}
+
 .left {
 	float: left;
 }

@@ -31,6 +31,11 @@ class Order extends ModelBase
 	public $gateway;
 
 	/**
+	 * Transaction ID on the gateway.
+	 */
+	public $txn_id;
+
+	/**
 	 * Total price paid.
 	 */
 	public $sum;
@@ -47,6 +52,7 @@ class Order extends ModelBase
 		parent::setField('user_id', ['int', ['foreign_key' => 'User']]);
 		parent::setField('pass_id', ['int', ['foreign_key' => 'Pass']]);
 		parent::setField('gateway', ['int', ['enum' => 'Gateways']]);
+		parent::setField('txn_id', ['string', ['name' => 'Transaction ID']]);
 		parent::setField('sum', ['int', ['suffix' => 'RON']]);
 	}
 
