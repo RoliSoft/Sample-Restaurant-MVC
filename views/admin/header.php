@@ -15,6 +15,7 @@
 		<link rel="shortcut icon" href="favicon.ico">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css">
 		<link rel="stylesheet" href="css/main.css">
 		<!--[if lt IE 9]>
 				<script src="js/vendor/html5-respond.min.js"></script>

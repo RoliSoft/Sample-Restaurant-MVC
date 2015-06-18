@@ -74,7 +74,28 @@ abstract class ModelBase
 		return null;
 	}
 
-    /**
+	/**
+	 * Gets the ID of the item.
+	 *
+	 * @return int|null ID, or null if none is set as primary.
+	 */
+	public function getId()
+	{
+		if (isset($this->fields['id']) && $this->fields['id'][1]['primary_key']) {
+			return $this->id;
+		}
+		else {
+			foreach ($this->fields as $field => $type) {
+				if ($type[1]['primary_key']) {
+					return $this->$field;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
      * Gets the item with the specified ID.
      *
      * @param int $id ID of the object to retrieve.
@@ -85,7 +106,7 @@ abstract class ModelBase
      */
 	public function get($id)
 	{
-		$sql = 'select `'.join('`, `', array_keys($this->fields)).'` from `'.$this->table.'` where `id` = ?';
+		$sql = 'select `'.join('`, `', array_keys($this->fields)).'` from `'.$this->table.'` where `'.$this->getPKName().'` = ?';
 		$params = [$id];
 
 		$query = $this->app->db->query($sql, $params);
@@ -103,6 +124,39 @@ abstract class ModelBase
 
 		if (!$result) {
 			return false;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Gets all the items, with the specified IDs.
+	 *
+	 * @param array $ids Array of IDs to fetch.
+	 * @param bool $remap When set to true, resulting array will be remapped so that the keys correspond to the ID.
+	 *
+	 * @throws Exception There was a query error.
+	 *
+	 * @return array|bool Array of instances, or false on failure.
+	 */
+	public function getMany($ids, $remap = true)
+	{
+		$idcol  = $this->getPKName();
+		$result = $this->getAll('`'.$idcol.'` in ('.join(',', $ids).')');
+
+		if (!$result) {
+			return false;
+		}
+
+		if ($remap) {
+			$bucket = [];
+
+			foreach ($result as $record) {
+				$bucket[$record->$idcol] = $record;
+			}
+
+			unset($result);
+			$result = $bucket;
 		}
 
 		return $result;
@@ -155,23 +209,24 @@ abstract class ModelBase
 	 */
 	public function save()
 	{
+		$idcol  = $this->getPKName();
 		$fields = $this->fields;
 
-		if (isset($fields['id'])) {
-			unset($fields['id']);
+		if (isset($fields[$idcol])) {
+			unset($fields[$idcol]);
 		}
 
 		// if ID is set, perform an update
 		if (isset($this->id)) {
-			$sql = 'update '.$this->table.' set ';
+			$sql = 'update `'.$this->table.'` set ';
 			$params = [];
 
 			foreach ($fields as $field => $type) {
-				$sql .= $field.' = ?, ';
+				$sql .= '`'.$field.'` = ?, ';
 				$params[] = $this->$field;
 			}
 
-			$sql = rtrim($sql, ', ').' where id = ? limit 1';
+			$sql = rtrim($sql, ', ').' where `'.$idcol.'` = ? limit 1';
 			$params[] = $this->id;
 		}
 		// if ID is not set, perform an insert

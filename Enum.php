@@ -59,7 +59,7 @@ abstract class Enum
 			self::reflect($class);
 		}
 
-		return self::$consts[$class][0];
+		return self::$consts[$class][1];
 	}
 
 	/**

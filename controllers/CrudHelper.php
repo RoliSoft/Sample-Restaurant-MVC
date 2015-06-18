@@ -151,6 +151,28 @@ class CrudHelper
 
             case POST: {
 
+	            switch ($this->app->query['action']) {
+
+		            case 'create': {
+
+			            $this->doCreateRecord();
+
+		            } break;
+
+		            case 'edit': {
+
+			            $this->doEditRecord();
+
+		            } break;
+
+		            case 'delete': {
+
+			            $this->doDeleteRecord();
+
+		            } break;
+
+	            }
+
             } break;
 
         }
@@ -170,6 +192,8 @@ class CrudHelper
 
 	    $foreign_cols = [];
 
+	    // check if type has foreign keys defined
+
 	    foreach ($this->fields as $field => $type) {
 		    if ($type[1]['foreign_key']) {
 				$foreign_cols[$field] = $type[1]['foreign_key'];
@@ -181,27 +205,24 @@ class CrudHelper
 	    if (!empty($foreign_cols)) {
 		    $foreign_ids = [];
 
+		    // gather all the referenced foreign key IDs
+
 		    foreach ($records as $record) {
 				foreach ($foreign_cols as $key => $type) {
 					$foreign_ids[$key][(int)$record->$key] = (int)$record->$key;
 				}
 		    }
 
+		    // fetch all foreign key IDs from database
+
 		    foreach ($foreign_ids as $col => $ids) {
 			    $class = $foreign_cols[$col];
 			    $instance = new $class($this->app);
-			    $idcol = $instance->getPKName();
-			    $result = $instance->getAll('`'.$idcol.'` in ('.join(',', $ids).')');
-
-				$foreigns[$col] = [];
-
-			    foreach ($result as $record) {
-				    $foreigns[$col][$record->$idcol] = $record;
-			    }
-
-			    unset($result);
+			    $foreigns[$col] = $instance->getMany($ids);
 		    }
 	    }
+
+	    // render the output
 
 	    if (isset($this->headerView)) {
 		    $this->app->view->make($this->headerView, $this->headerArgs);
@@ -219,16 +240,74 @@ class CrudHelper
 	 */
 	private function createRecord()
 	{
+		// check if type has foreign keys defined
+
+		foreach ($this->fields as $field => $type) {
+			if ($type[1]['foreign_key']) {
+				$foreign_cols[$field] = $type[1]['foreign_key'];
+			}
+		}
+
+		$foreigns = [];
+
+		if (!empty($foreign_cols)) {
+			// fetch all foreign keys from database
+
+			foreach ($foreign_cols as $table => $class) {
+				$instance = new $class($this->app);
+				$result = $instance->getAll();
+				$foreigns[$class] = [];
+
+				foreach ($result as $record) {
+					$foreigns[$class][$record->getId()] = (string)$record;
+				}
+
+				unset($result);
+			}
+		}
+
+		// render the output
+
 		if (isset($this->headerView)) {
 			$this->app->view->make($this->headerView, $this->headerArgs);
 		}
 
 		$this->generateCsrfToken('cru');
-		$this->app->view->make('crud/create', ['fields' => $this->fields, 'class' => $this->type]);
+		$this->app->view->make('crud/create', ['fields' => $this->fields, 'class' => $this->type, 'foreigns' => $foreigns]);
 
 		if (isset($this->footerView)) {
 			$this->app->view->make($this->footerView, $this->footerArgs);
 		}
+	}
+
+	/**
+	 * Processes the record creation form and executes it.
+	 */
+	private function doCreateRecord()
+	{
+		if (!$this->verifyCsrfToken('cru')) {
+			throw new Exception('Security error: CSRF token validation failed.');
+		}
+
+		$table  = new $this->type($this->app);
+		$fields = $table->getFields();
+
+		foreach ($fields as $key => $type) {
+			if (isset($_POST[$key]) && (strlen($_POST[$key]) != 0 || $type[1]['hidden'])) {
+				$table->$key = $_POST[$key];
+			}
+			else if (!$type[1]['primary_key']) {
+				throw new Exception('Field `'.$key.'` is required.');
+			}
+		}
+
+		if (!$table->save()) {
+			throw new Exception('Server error occurred while adding record.');
+		}
+
+		// redirect the user
+
+		$this->app->view->redirect('?#item-'.$table->getId());
 	}
 
 	/**

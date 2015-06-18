@@ -56,4 +56,15 @@ class View
 		include $file;
 	}
 
+	/**
+	 * Redirects the user to the specified location.
+	 *
+	 * @param string $url Destination URL.
+	 */
+	public function redirect($url)
+	{
+		@header('Location: '.$url);
+		$this->make('redirect', ['url' => $url]);
+	}
+
 }

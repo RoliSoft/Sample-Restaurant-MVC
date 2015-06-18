@@ -22,37 +22,37 @@ foreach ($fields as $field => $type):
 					</thead>
 					<tbody>
 <? foreach ($records as $record): ?>
-					<tr>
+					<tr class="item-<?=$record->getId()?>">
 <?
-foreach ($fields as $field => $type):
+	foreach ($fields as $field => $type):
 
-	$conf = $type[1];
+		$conf = $type[1];
 
-	if ($conf['hidden']) {
-		continue;
-	}
+		if ($conf['hidden']) {
+			continue;
+		}
 
-	if ($conf['primary_key']) {
-		$id = $record->$field;
-	}
+		if ($conf['primary_key']) {
+			$id = $record->$field;
+		}
 
-	if ($conf['enum']) {
-		$value = $conf['enum']::getName($record->$field);
-	}
-	else if ($conf['foreign_key']) {
-		if (isset($foreigns[$field][$record->$field])) {
-			$value = (string)$foreigns[$field][$record->$field];
+		if ($conf['enum']) {
+			$value = $conf['enum']::getName($record->$field);
+		}
+		else if ($conf['foreign_key']) {
+			if (isset($foreigns[$field][$record->$field])) {
+				$value = (string)$foreigns[$field][$record->$field];
+			}
+			else {
+				$value = '#'.$record->$field;
+			}
 		}
 		else {
-			$value = '#'.$record->$field;
+			$value = $record->$field;
 		}
-	}
-	else {
-		$value = $record->$field;
-	}
 ?>
 						<td><?=isset($conf['prefix'])?'<small>'.$conf['prefix'].'</small> ':''?><?=htmlspecialchars($value)?><?=isset($conf['suffix'])?' <small>'.$conf['suffix'].'</small>':''?></td>
-<? endforeach; // ($fields as $field => $type) ?>
+<?  endforeach; // ($fields as $field => $type) ?>
 						<td class="admin-table-btns">
 							<a role="button" class="btn btn-xs btn-info" href="?action=edit&record=<?=$id?>"><span class="fa fa-pencil"></span> Edit</a>
 							<a role="button" class="btn btn-xs btn-primary" href="?action=delete&record=<?=$id?>"><span class="fa fa-trash"></span> Delete</a>
