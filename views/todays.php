@@ -38,5 +38,14 @@
 					</div>
 <? endforeach; // $foods as $food ?>
 				</div>
+				<div class="col-md-12">
+					<p class="bigger-font text-center"><i class="fa fa-info-circle"></i>
+<? if (empty($_SESSION['user'])): ?>
+						<a href="login">Sign in</a> to reserve your food.
+<? else: ?>
+						Reserve your food on the <a href="week">Week</a> page.
+<? endif; ?>
+					</p>
+				</div>
 			</div>
 		</div>

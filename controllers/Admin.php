@@ -76,6 +76,15 @@ class Admin extends ControllerBase
 	}
 
 	/**
+	 * Generates the reserves page.
+	 */
+	public function reserves()
+	{
+		$crud = new CrudHelper($this, 'Reserve', 'admin/header', UserMgmt::getHeaderVariables(), 'admin/footer', null);
+		$crud->run();
+	}
+
+	/**
 	 * Generates the users page.
 	 */
 	public function users()

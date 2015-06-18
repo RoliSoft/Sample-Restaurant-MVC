@@ -307,7 +307,7 @@ class UserMgmt extends ControllerBase
 	 *
 	 * @param string $name Name of the token.
 	 */
-	private static function generateCsrfToken($name)
+	public static function generateCsrfToken($name)
 	{
 		if (empty($_SESSION[$name.'_csrf'])) {
 			$_SESSION[$name.'_csrf'] = self::base64Encode(openssl_random_pseudo_bytes(19));
@@ -322,7 +322,7 @@ class UserMgmt extends ControllerBase
 	 *
 	 * @return bool Value indicating whether the sent token is valid.
 	 */
-	private static function verifyCsrfToken($name, $value = null)
+	public static function verifyCsrfToken($name, $value = null)
 	{
 		self::generateCsrfToken($name);
 

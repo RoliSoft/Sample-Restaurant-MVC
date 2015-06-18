@@ -39,6 +39,7 @@
 						<li><a href="admin-menu"><i class="fa fa-calendar"></i> Menu</a></li>
 						<li><a href="admin-passes"><i class="fa fa-ticket"></i> Passes</a></li>
 						<li><a href="admin-orders"><i class="fa fa-credit-card"></i> Orders</a></li>
+						<li><a href="admin-reserves"><i class="fa fa-th-list"></i> Reserves</a></li>
 						<li><a href="admin-users"><i class="fa fa-group"></i> Users</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">

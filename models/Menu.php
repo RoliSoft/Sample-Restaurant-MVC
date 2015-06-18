@@ -39,7 +39,7 @@ class Menu extends ModelBase
 	 */
 	public function __toString()
 	{
-		return $this->date;
+		return $this->date.' / '.$this->food_id;
 	}
 
 }

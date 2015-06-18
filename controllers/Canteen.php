@@ -72,12 +72,12 @@ class Canteen extends ControllerBase
 	{
 		$this->app->view->make('header', UserMgmt::getHeaderVariables());
 
-		// fetch today's menu
+		// fetch this week's menu
 
 		$menu  = new Menu($this);
 		$today = $menu->getAll('yearweek(date) = yearweek(current_date())');
 
-		// fetch the foods listed on today's menu
+		// fetch the foods listed on this week's menu
 
 		$food_ids = [];
 		foreach ($today as $row) {
@@ -87,9 +87,75 @@ class Canteen extends ControllerBase
 		$food  = new Food($this);
 		$foods = $food->getMany($food_ids);
 
+		// fetch the reservation, if any
+
+		if (!empty($_SESSION['user'])) {
+			$reserve  = new Reserve($this);
+			$reserves = $reserve->getAll('user_id = ?', [$_SESSION['user']['id']]);
+
+			$resids = [];
+
+			foreach ($reserves as $reserve) {
+				$resids[$reserve->menu_id] = true;
+			}
+
+			unset($reserves);
+		}
+
 		// render the listing
 
-		$this->app->view->make('weeks', ['title' => 'This Week\'s Menu', 'subtext' => date('\W\e\e\k W \of Y'), 'menu' => $today, 'foods' => $foods]);
+		UserMgmt::generateCsrfToken('res');
+		$this->app->view->make('weeks', ['title' => 'This Week\'s Menu', 'subtext' => date('\W\e\e\k W \of Y'), 'menu' => $today, 'foods' => $foods, 'reserves' => $resids]);
+
+		$this->app->view->make('footer');
+	}
+
+	/**
+	 * Processes the weekly reservation form.
+	 *
+	 * @throws Exception Security or reservation error.
+	 */
+	public function doWeek()
+	{
+		// security and sanity check
+
+		if (!UserMgmt::verifyCsrfToken('res')) {
+			throw new Exception('Security error: CSRF token validation failed.');
+		}
+
+		if (empty($_SESSION['user'])) {
+			throw new Exception('No user is logged in.');
+		}
+
+		// throw away older reservations
+
+		$this->app->db->exec('delete from `reserve` where `user_id` = ?', [$_SESSION['user']['id']]);
+
+		// insert the new reservations
+
+		$cnt = 0;
+
+		foreach ($_POST as $key => $value) {
+			if (substr($key, 0, 6) != 'radio-') {
+				continue;
+			}
+
+			$res = new Reserve($this);
+
+			$res->date = date('Y-m-d H:i:s');
+			$res->user_id = $_SESSION['user']['id'];
+			$res->menu_id = $value;
+
+			$res->save();
+
+			$cnt++;
+		}
+
+		// render the output
+
+		$this->app->view->make('header', UserMgmt::getHeaderVariables());
+
+		$this->app->view->make('jumbotron', ['content' => '<h1><i class="fa fa-check breathe-shadow"></i> Reservation Completed</h1><p>You have successfully reserved '.$cnt.' courses for this week.</p>']);
 
 		$this->app->view->make('footer');
 	}
@@ -126,6 +192,8 @@ class Canteen extends ControllerBase
 
 	/**
 	 * Processes the pass payment form.
+	 *
+	 * @throws Exception Missing form information of transaction failed.
 	 */
 	public function doPasses()
 	{
