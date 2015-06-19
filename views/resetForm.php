@@ -34,7 +34,7 @@
                                 </div>
                             </div>
                         </div>
-                        <script type="text/javascript">var RecaptchaOptions = {theme : 'custom', custom_theme_widget: 'recaptcha_widget'};</script><? require_once 'libs/recaptcha/recaptchalib.php'; print recaptcha_get_html('6LepavQSAAAAAD2zVCWa5EKttk3WX5lrPtnEDx-r'); ?>
+                        <script type="text/javascript">var RecaptchaOptions = {theme : 'custom', custom_theme_widget: 'recaptcha_widget'};</script><? require_once 'libs/recaptcha/recaptchalib.php'; print recaptcha_get_html('6LepavQSAAAAAD2zVCWa5EKttk3WX5lrPtnEDx-r', null, true); ?>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-5">
                                 <input type="hidden" name="token" value="<?=$_SESSION['rst_csrf']?>" />
